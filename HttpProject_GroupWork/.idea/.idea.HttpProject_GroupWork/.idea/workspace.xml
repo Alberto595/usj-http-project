@@ -8,7 +8,22 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e79949cd-9e8a-4246-a360-00d7a6e9ba46" name="Changes" comment="" />
+    <list default="true" id="e79949cd-9e8a-4246-a360-00d7a6e9ba46" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/Client/Client.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Client.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Program.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/bin/Debug/Client.exe" beforeDir="false" afterPath="$PROJECT_DIR$/Client/bin/Debug/Client.exe" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/bin/Debug/Client.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/Client/bin/Debug/Client.pdb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/obj/Debug/Client.csproj.AssemblyReference.cache" beforeDir="false" afterPath="$PROJECT_DIR$/Client/obj/Debug/Client.csproj.AssemblyReference.cache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/obj/Debug/Client.exe" beforeDir="false" afterPath="$PROJECT_DIR$/Client/obj/Debug/Client.exe" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/obj/Debug/Client.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/Client/obj/Debug/Client.pdb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HttpProject_GroupWork/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/HttpProject_GroupWork/Program.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HttpProject_GroupWork/Server.cs" beforeDir="false" afterPath="$PROJECT_DIR$/HttpProject_GroupWork/Server.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HttpProject_GroupWork/bin/Debug/HttpProject_GroupWork.exe" beforeDir="false" afterPath="$PROJECT_DIR$/HttpProject_GroupWork/bin/Debug/HttpProject_GroupWork.exe" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HttpProject_GroupWork/bin/Debug/HttpProject_GroupWork.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/HttpProject_GroupWork/bin/Debug/HttpProject_GroupWork.pdb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HttpProject_GroupWork/obj/Debug/HttpProject_GroupWork.csproj.AssemblyReference.cache" beforeDir="false" afterPath="$PROJECT_DIR$/HttpProject_GroupWork/obj/Debug/HttpProject_GroupWork.csproj.AssemblyReference.cache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HttpProject_GroupWork/obj/Debug/HttpProject_GroupWork.exe" beforeDir="false" afterPath="$PROJECT_DIR$/HttpProject_GroupWork/obj/Debug/HttpProject_GroupWork.exe" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HttpProject_GroupWork/obj/Debug/HttpProject_GroupWork.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/HttpProject_GroupWork/obj/Debug/HttpProject_GroupWork.pdb" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -31,28 +46,28 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    ".NET Project.Client.executor": "Run",
-    ".NET Project.HttpProject_GroupWork.executor": "Run",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "main",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;.NET Project.Client.executor&quot;: &quot;Run&quot;,
+    &quot;.NET Project.HttpProject_GroupWork.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
-  "keyToStringList": {
-    "rider.external.source.directories": [
-      "/Users/alberto/Library/Application Support/JetBrains/Rider2023.3/resharper-host/DecompilerCache",
-      "/Users/alberto/Library/Application Support/JetBrains/Rider2023.3/resharper-host/SourcesCache",
-      "/Users/alberto/.local/share/Symbols/src"
+  &quot;keyToStringList&quot;: {
+    &quot;rider.external.source.directories&quot;: [
+      &quot;/Users/alberto/Library/Application Support/JetBrains/Rider2023.3/resharper-host/DecompilerCache&quot;,
+      &quot;/Users/alberto/Library/Application Support/JetBrains/Rider2023.3/resharper-host/SourcesCache&quot;,
+      &quot;/Users/alberto/.local/share/Symbols/src&quot;
     ]
   }
-}]]></component>
+}</component>
   <component name="RunManager" selected=".NET Project.Client">
     <configuration name="Client" type="DotNetProject" factoryName=".NET Project">
       <option name="EXE_PATH" value="" />
@@ -102,7 +117,7 @@
       <workItem from="1710955004340" duration="75000" />
       <workItem from="1710955082851" duration="1124000" />
       <workItem from="1712132018805" duration="8460000" />
-      <workItem from="1712762145506" duration="2807000" />
+      <workItem from="1712762145506" duration="2562000" />
     </task>
     <servers />
   </component>
@@ -111,5 +126,37 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/Client/Client.cs</url>
+          <line>56</line>
+          <properties documentPath="$PROJECT_DIR$/Client/Client.cs" initialLine="55" containingFunctionPresentation="Method 'ClientMethod'">
+            <startOffsets>
+              <option value="2090" />
+            </startOffsets>
+            <endOffsets>
+              <option value="2090" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/Client/Program.cs</url>
+          <line>13</line>
+          <properties documentPath="$PROJECT_DIR$/Client/Program.cs" initialLine="13" containingFunctionPresentation="Method 'Main'">
+            <startOffsets>
+              <option value="251" />
+            </startOffsets>
+            <endOffsets>
+              <option value="252" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="5" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

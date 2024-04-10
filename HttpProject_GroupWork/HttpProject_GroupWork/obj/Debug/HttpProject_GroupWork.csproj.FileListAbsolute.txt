@@ -1,0 +1,13 @@
+/Users/alberto/Documents/GitHub/usj-http-project/HttpProject_GroupWork/HttpProject_GroupWork/bin/Debug/HttpProject_GroupWork.exe
+/Users/alberto/Documents/GitHub/usj-http-project/HttpProject_GroupWork/HttpProject_GroupWork/bin/Debug/HttpProject_GroupWork.pdb
+/Users/alberto/Documents/GitHub/usj-http-project/HttpProject_GroupWork/HttpProject_GroupWork/obj/Debug/HttpProject_GroupWork.csproj.AssemblyReference.cache
+/Users/alberto/Documents/GitHub/usj-http-project/HttpProject_GroupWork/HttpProject_GroupWork/obj/Debug/HttpProject_GroupWork.csproj.CoreCompileInputs.cache
+/Users/alberto/Documents/GitHub/usj-http-project/HttpProject_GroupWork/HttpProject_GroupWork/obj/Debug/HttpProject_GroupWork.exe
+/Users/alberto/Documents/GitHub/usj-http-project/HttpProject_GroupWork/HttpProject_GroupWork/obj/Debug/HttpProject_GroupWork.pdb
+D:\GitHub\usj-http-project\HttpProject_GroupWork\HttpProject_GroupWork\bin\Debug\HttpProject_GroupWork.exe
+D:\GitHub\usj-http-project\HttpProject_GroupWork\HttpProject_GroupWork\bin\Debug\HttpProject_GroupWork.pdb
+D:\GitHub\usj-http-project\HttpProject_GroupWork\HttpProject_GroupWork\obj\Debug\HttpProject_GroupWork.csproj.AssemblyReference.cache
+D:\GitHub\usj-http-project\HttpProject_GroupWork\HttpProject_GroupWork\obj\Debug\HttpProject_GroupWork.csproj.SuggestedBindingRedirects.cache
+D:\GitHub\usj-http-project\HttpProject_GroupWork\HttpProject_GroupWork\obj\Debug\HttpProject_GroupWork.csproj.CoreCompileInputs.cache
+D:\GitHub\usj-http-project\HttpProject_GroupWork\HttpProject_GroupWork\obj\Debug\HttpProject_GroupWork.exe
+D:\GitHub\usj-http-project\HttpProject_GroupWork\HttpProject_GroupWork\obj\Debug\HttpProject_GroupWork.pdb

@@ -1,0 +1,6 @@
+/Users/alberto/Documents/GitHub/usj-http-project/HttpProject_GroupWork/Client/bin/Debug/Client.exe
+/Users/alberto/Documents/GitHub/usj-http-project/HttpProject_GroupWork/Client/bin/Debug/Client.pdb
+/Users/alberto/Documents/GitHub/usj-http-project/HttpProject_GroupWork/Client/obj/Debug/Client.csproj.AssemblyReference.cache
+/Users/alberto/Documents/GitHub/usj-http-project/HttpProject_GroupWork/Client/obj/Debug/Client.csproj.CoreCompileInputs.cache
+/Users/alberto/Documents/GitHub/usj-http-project/HttpProject_GroupWork/Client/obj/Debug/Client.exe
+/Users/alberto/Documents/GitHub/usj-http-project/HttpProject_GroupWork/Client/obj/Debug/Client.pdb
