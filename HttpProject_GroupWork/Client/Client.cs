@@ -11,16 +11,17 @@ namespace Client
         public string server;
         public int port;
         public string request;
+        public string verbType;
+        public string filePath = "";
         
-        public Client(string server = "localhost")
+        public Client(string verb = "GET", string server = "localhost")
         {
             this.server = server;
             this.port = 3000;
-
-            this.request = "GET / HTTP/1.1\r\n"
+            this.verbType = verb;
+            this.request = " HTTP/1.1\r\n"
                              + "Host: " + server + "\r\n"
-                             + "Connection: close\r\n"
-                             + "\r\n";
+                             + "Connection: close";
         }
         
         public async Task ClientMethod()
@@ -39,11 +40,12 @@ namespace Client
             while (true)
             {
                 // Send message.
-                var message = "Hi friends 👋!<|EOM|>";
-                byte[] messageBytes = Encoding.UTF8.GetBytes(message);
+                // var message = "Hi friends 👋!<|EOM|>";
+                BuildRequest();
+                byte[] messageBytes = Encoding.UTF8.GetBytes(request);
                 var messageBytesSegment = new ArraySegment<byte>(messageBytes);
                 _ = await client.SendAsync(messageBytesSegment, SocketFlags.None);
-                Console.WriteLine($"Socket client sent message: \"{message}\"");
+                Console.WriteLine($"Socket client sent message: \n\"{request}\"");
 
                 // Receive ack.
                 byte[] buffer = new byte[1024];
@@ -52,8 +54,7 @@ namespace Client
                 var response = Encoding.UTF8.GetString(bufferSegment.Array, bufferSegment.Offset, received);
                 if (response == "<|ACK|>")
                 {
-                    Console.WriteLine(
-                        $"Socket client received acknowledgment: \"{response}\"");
+                    Console.WriteLine("Socket client received acknowledgment: \n"+ response);
                     break;
                 }
                 // Sample output:
@@ -81,6 +82,10 @@ namespace Client
             //     throw;
             // }
         }
-        
+
+        public void BuildRequest()
+        {
+            request = verbType + " " + filePath + request /* + body */;
+        }
     }
 }
