@@ -40,8 +40,6 @@ namespace Client
             }
             
             client.ClientMethod().Wait();
-
-            //Console.ReadKey();
         }
 
         public static string GET_Header()
