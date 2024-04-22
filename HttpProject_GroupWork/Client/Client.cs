@@ -8,11 +8,26 @@ namespace Client
 {
     public class Client
     {
+        //Connection variables
         public string server;
         public int port;
+        //General variables
         public string request;
         public string verbType;
-        public string filePath = "";
+        public string body = "";
+        //GET variables
+        public string filePath = "/";
+        //POST variables
+        public string contentType = "";
+        /// <summary>
+        /// indicates the length of the message body, in bytes.
+        /// </summary>
+        public string contentLenght = "";
+        /// <summary>
+        /// In a multipart form, each value is sent as a block of data and a delimiter is used to separate each part.
+        /// The delimiter between parts is called the Boundary
+        /// </summary>
+        public string boundary = "NextField";
         
         public Client(string verb = "GET", string server = "localhost")
         {
@@ -37,7 +52,7 @@ namespace Client
             
             await client.ConnectAsync(ipEndPoint);
             
-            // Send message.
+            // Send message
             BuildRequest();
             byte[] messageBytes = Encoding.UTF8.GetBytes(request);
             var messageBytesSegment = new ArraySegment<byte>(messageBytes);
@@ -79,7 +94,7 @@ namespace Client
 
         public void BuildRequest()
         {
-            request = verbType + " " + filePath + " " + request /* + body */;
+            request = verbType + " " + filePath + " " + request + body ;
         }
     }
 }

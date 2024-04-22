@@ -13,6 +13,7 @@ namespace HttpProject_GroupWork
         private string verbType = "";
         private string filePath = "";
         private string httpVersion = "";
+        private string response = "";
         
         public Server()
         {
@@ -68,32 +69,19 @@ namespace HttpProject_GroupWork
                         break;
                     }
 
-                    string response = Encoding.UTF8.GetString(bufferSegment.Array, bufferSegment.Offset, received);
+                    string request = Encoding.UTF8.GetString(bufferSegment.Array, bufferSegment.Offset, received);
 
-                    UnpackRequestClientInformation(response);
+                    UnpackRequestClientInformation(in request);
 
                     //Getting the information from a file
-                    string line = "";
-                    try
-                    {
-                        using (StreamReader file = new StreamReader("../../../" + filePath))
-                        {
-                            // Read and display lines from the file until the end of
-                            // the file is reached.
-                            line = await file.ReadToEndAsync();
-                        }
-                    }
-                    catch
-                    {
-                        line = "Error 404 not found";
-                        Console.WriteLine("The file " + filePath + " has not be found");
-                    }
+                    DoActionBasedOnVerb();
                     
-                    byte[] echoBytes = Encoding.UTF8.GetBytes(line);
+                    // Send Response to the client
+                    byte[] echoBytes = Encoding.UTF8.GetBytes(response);
                     var echoBytesSegment = new ArraySegment<byte>(echoBytes);
                     await handler.SendAsync(echoBytesSegment, 0);
 
-                    Console.WriteLine("The server sends the following information: " + line);
+                    Console.WriteLine("The server sends the following information: " + response);
                 }
             }
         }
@@ -101,46 +89,28 @@ namespace HttpProject_GroupWork
         /// <summary>
         /// Separate the client information to know what to send back. E.g. FilePath, VerbType, etc.
         /// </summary>
-        public void UnpackRequestClientInformation(string response)
+        public void UnpackRequestClientInformation(in string request)
         {
-            Console.WriteLine($"Socket server received message:\n\"{response}\"");
+            Console.WriteLine($"Socket server received message:\n\"{request}\"");
 
             // GETTING INFORMATION FROM THE REQUEST
-            int count = response.Length;
+            int count = request.Length;
             int positionInRequest = 0;
-                
-            for (int i = 0; i < count; i++) //THE VERB
-            {
-                if (response[i] == ' ')
-                {
-                    positionInRequest = i + 1;
-                    break;
-                }
-                verbType += response[i];
-            }
 
-            for (int i = positionInRequest; i < count; i++) // THE FILE PATH
+            UnpackVerbType(in request, count, ref positionInRequest);
+
+            // Get the information of the request depending on the verb type
+            switch (verbType)
             {
-                if (response[i] == ' ')
-                {
-                    positionInRequest = i + 1;
+                case "GET":
+                    UnpackGET_VerbType(in request, count, ref positionInRequest);
                     break;
-                }
-                filePath += response[i];
-            }
-                
-            for (int i = positionInRequest; i < count; i++) // THE HTTP VERSION
-            {
-                if (response[i] == '\r')
-                {
+                case "POST":
+                    UnpackPOST_VerbType(in request, count, ref positionInRequest);
                     break;
-                }
-                httpVersion += response[i];
+                default:
+                    break;
             }
-                
-            Console.WriteLine("Verb information: " + verbType);
-            Console.WriteLine("File-Path information: " + filePath);
-            Console.WriteLine("Http-Version information: " + httpVersion);
         }
 
         public void ResetVariables()
@@ -148,6 +118,115 @@ namespace HttpProject_GroupWork
             verbType = "";
             filePath = "";
             httpVersion = "";
+            response = "";
         }
+
+        public void UnpackVerbType(in string request, int count, ref int positionInRequest)
+        {
+            for (int i = 0; i < count; i++) //THE VERB
+            {
+                if (request[i] == ' ')
+                {
+                    positionInRequest = i + 1;
+                    break;
+                }
+                verbType += request[i];
+            }
+            
+            Console.WriteLine("Verb information: " + verbType);
+        }
+
+        public void DoActionBasedOnVerb()
+        {
+            switch (verbType)
+            {
+                case "GET":
+                    response = GET_VerbAction().Result;
+                    break;
+                case "POST":
+                    response = POST_VerbAction().Result;
+                    break;
+                default:
+                    break;
+            }
+        }
+        
+        #region GET_VerbType
+        
+        public void UnpackGET_VerbType(in string request, int count, ref int positionInRequest)
+        {
+            for (int i = positionInRequest; i < count; i++) // THE FILE PATH
+            {
+                if (request[i] == ' ')
+                {
+                    positionInRequest = i + 1;
+                    break;
+                }
+                filePath += request[i];
+            }
+                
+            for (int i = positionInRequest; i < count; i++) // THE HTTP VERSION
+            {
+                if (request[i] == '\r')
+                {
+                    break;
+                }
+                httpVersion += request[i];
+            }
+            
+            Console.WriteLine("File-Path information: " + filePath);
+            Console.WriteLine("Http-Version information: " + httpVersion);
+        }
+
+        public async Task<string> GET_VerbAction()
+        {
+            try
+            {
+                using (StreamReader file = new StreamReader("../../../" + filePath))
+                {
+                    // Read and display lines from the file until the end of
+                    // the file is reached.
+                    response = await file.ReadToEndAsync();
+                }
+            }
+            catch
+            {
+                response = "Error 404 not found";
+                Console.WriteLine("The file " + filePath + " has not be found");
+            }
+
+            return response;
+        }
+        
+        #endregion
+
+        #region POST_VerbType
+
+        public void UnpackPOST_VerbType(in string request, int count, ref int positionInRequest)
+        {
+            
+        }
+        
+        public async Task<string> POST_VerbAction()
+        {
+            try
+            {
+                using (StreamReader file = new StreamReader("../../../" + filePath))
+                {
+                    // Read and display lines from the file until the end of
+                    // the file is reached.
+                    response = await file.ReadToEndAsync();
+                }
+            }
+            catch
+            {
+                response = "Error 404 not found";
+                Console.WriteLine("The file " + filePath + " has not be found");
+            }
+
+            return response;
+        }
+
+        #endregion
     }
 }

@@ -17,3 +17,9 @@ C:\Users\alber\Documents\GitHub\usj-http-project\HttpProject_GroupWork\HttpProje
 C:\Users\alber\Documents\GitHub\usj-http-project\HttpProject_GroupWork\HttpProject_GroupWork\obj\Debug\HttpProject_GroupWork.csproj.CoreCompileInputs.cache
 C:\Users\alber\Documents\GitHub\usj-http-project\HttpProject_GroupWork\HttpProject_GroupWork\obj\Debug\HttpProject_GroupWork.exe
 C:\Users\alber\Documents\GitHub\usj-http-project\HttpProject_GroupWork\HttpProject_GroupWork\obj\Debug\HttpProject_GroupWork.pdb
+C:\Users\Alberto\Documentos\GithubRepositorios\usj-http-project\HttpProject_GroupWork\HttpProject_GroupWork\bin\Debug\HttpProject_GroupWork.exe
+C:\Users\Alberto\Documentos\GithubRepositorios\usj-http-project\HttpProject_GroupWork\HttpProject_GroupWork\bin\Debug\HttpProject_GroupWork.pdb
+C:\Users\Alberto\Documentos\GithubRepositorios\usj-http-project\HttpProject_GroupWork\HttpProject_GroupWork\obj\Debug\HttpProject_GroupWork.csproj.AssemblyReference.cache
+C:\Users\Alberto\Documentos\GithubRepositorios\usj-http-project\HttpProject_GroupWork\HttpProject_GroupWork\obj\Debug\HttpProject_GroupWork.csproj.CoreCompileInputs.cache
+C:\Users\Alberto\Documentos\GithubRepositorios\usj-http-project\HttpProject_GroupWork\HttpProject_GroupWork\obj\Debug\HttpProject_GroupWork.exe
+C:\Users\Alberto\Documentos\GithubRepositorios\usj-http-project\HttpProject_GroupWork\HttpProject_GroupWork\obj\Debug\HttpProject_GroupWork.pdb
