@@ -1,8 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace Client
 {
@@ -39,8 +41,10 @@ namespace Client
                              + "Connection: close";
         }
         
-        public async Task ClientMethod()
+        public async Task Request(string verbType, string filepath, string url, Dictionary<string,string> headers, VideoGames_Data data)
         {
+            AdaptRequestData(verbType, filepath, url, headers, data);
+            
             IPHostEntry ipHostInfo = await Dns.GetHostEntryAsync(server);
             IPAddress ipAddress = ipHostInfo.AddressList[0];
             IPEndPoint ipEndPoint = new IPEndPoint(ipAddress, port);
@@ -94,7 +98,32 @@ namespace Client
 
         public void BuildRequest()
         {
-            request = verbType + " " + filePath + " " + request + body ;
+            request = verbType + " " + filePath + " " + request + "\r\n" + body;
+        }
+
+        public void AdaptRequestData(string verbType, string filepath, string url, Dictionary<string,string> headers, VideoGames_Data data)
+        {
+            //VERB TYPE
+            this.verbType = verbType;
+            //FILE PATH
+            this.filePath = filepath;
+            //SERVER URL
+            this.server = url;
+            //BODY
+            if (data.name != "")
+            {
+                this.body = JsonConvert.SerializeObject(data);
+            }
+            
+            //HEADERS
+            this.request = "HTTP/1.1\r\n";
+
+            foreach (var tuple in headers)
+            {
+                this.request += tuple.Key + ": " + tuple.Value + "\r\n";
+            }
+            
+            this.request += "Content-Length: " + this.body.Length + "\r\n";
         }
     }
 }

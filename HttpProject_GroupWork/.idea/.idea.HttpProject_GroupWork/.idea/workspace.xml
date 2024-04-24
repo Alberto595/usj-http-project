@@ -9,20 +9,22 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e79949cd-9e8a-4246-a360-00d7a6e9ba46" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/Client/VideoGames_Data.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.HttpProject_GroupWork/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.HttpProject_GroupWork/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Client/Client.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Client.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Client.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Client.csproj" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Client/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Program.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Client/bin/Debug/Client.exe" beforeDir="false" afterPath="$PROJECT_DIR$/Client/bin/Debug/Client.exe" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Client/bin/Debug/Client.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/Client/bin/Debug/Client.pdb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Client/obj/Debug/Client.csproj.AssemblyReference.cache" beforeDir="false" afterPath="$PROJECT_DIR$/Client/obj/Debug/Client.csproj.AssemblyReference.cache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/obj/Debug/Client.csproj.CoreCompileInputs.cache" beforeDir="false" afterPath="$PROJECT_DIR$/Client/obj/Debug/Client.csproj.CoreCompileInputs.cache" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Client/obj/Debug/Client.csproj.FileListAbsolute.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Client/obj/Debug/Client.csproj.FileListAbsolute.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Client/obj/Debug/Client.exe" beforeDir="false" afterPath="$PROJECT_DIR$/Client/obj/Debug/Client.exe" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Client/obj/Debug/Client.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/Client/obj/Debug/Client.pdb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/HttpProject_GroupWork/Server.cs" beforeDir="false" afterPath="$PROJECT_DIR$/HttpProject_GroupWork/Server.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/HttpProject_GroupWork/bin/Debug/HttpProject_GroupWork.exe" beforeDir="false" afterPath="$PROJECT_DIR$/HttpProject_GroupWork/bin/Debug/HttpProject_GroupWork.exe" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/HttpProject_GroupWork/bin/Debug/HttpProject_GroupWork.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/HttpProject_GroupWork/bin/Debug/HttpProject_GroupWork.pdb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/HttpProject_GroupWork/obj/Debug/HttpProject_GroupWork.csproj.AssemblyReference.cache" beforeDir="false" afterPath="$PROJECT_DIR$/HttpProject_GroupWork/obj/Debug/HttpProject_GroupWork.csproj.AssemblyReference.cache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/HttpProject_GroupWork/obj/Debug/HttpProject_GroupWork.csproj.FileListAbsolute.txt" beforeDir="false" afterPath="$PROJECT_DIR$/HttpProject_GroupWork/obj/Debug/HttpProject_GroupWork.csproj.FileListAbsolute.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HttpProject_GroupWork/obj/Debug/HttpProject_GroupWork.csproj.CoreCompileInputs.cache" beforeDir="false" afterPath="$PROJECT_DIR$/HttpProject_GroupWork/obj/Debug/HttpProject_GroupWork.csproj.CoreCompileInputs.cache" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/HttpProject_GroupWork/obj/Debug/HttpProject_GroupWork.exe" beforeDir="false" afterPath="$PROJECT_DIR$/HttpProject_GroupWork/obj/Debug/HttpProject_GroupWork.exe" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/HttpProject_GroupWork/obj/Debug/HttpProject_GroupWork.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/HttpProject_GroupWork/obj/Debug/HttpProject_GroupWork.pdb" afterDir="false" />
     </list>
@@ -54,7 +56,7 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
-    ".NET Project.Client.executor": "Debug",
+    ".NET Project.Client.executor": "Run",
     ".NET Project.HttpProject_GroupWork.executor": "Run",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
@@ -68,9 +70,9 @@
   },
   "keyToStringList": {
     "rider.external.source.directories": [
-      "C:\\Users\\Alberto\\AppData\\Roaming\\JetBrains\\Rider2024.1\\resharper-host\\DecompilerCache",
-      "C:\\Users\\Alberto\\AppData\\Roaming\\JetBrains\\Rider2024.1\\resharper-host\\SourcesCache",
-      "C:\\Users\\Alberto\\AppData\\Local\\Symbols\\src"
+      "/Users/alberto/Library/Application Support/JetBrains/Rider2023.3/resharper-host/DecompilerCache",
+      "/Users/alberto/Library/Application Support/JetBrains/Rider2023.3/resharper-host/SourcesCache",
+      "/Users/alberto/.local/share/Symbols/src"
     ]
   }
 }]]></component>
@@ -127,6 +129,7 @@
       <workItem from="1713367104376" duration="5954000" />
       <workItem from="1713712387803" duration="6356000" />
       <workItem from="1713793780628" duration="9427000" />
+      <workItem from="1713971150547" duration="5588000" />
     </task>
     <servers />
   </component>

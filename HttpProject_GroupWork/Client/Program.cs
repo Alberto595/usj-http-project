@@ -1,14 +1,23 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Client
 {
     internal class Program
     {
+        static string verbType = "";
+        static string filePath = "";
+        static Dictionary<string, string> dictionary = new Dictionary<string, string>();
+        static private string url = "";
+        private static VideoGames_Data videoGamesData = new VideoGames_Data();
+        
         public static void Main(string[] args)
         {
             Client client = new Client();
             char optionSelected = '\0';
             Console.WriteLine("Hello User!");
+            
+            SetURL();
             
             while (optionSelected == '\0')
             {
@@ -19,18 +28,19 @@ namespace Client
                 switch (optionSelected)
                 {
                     case '1':
-                        client.verbType = "GET";
-                        client.filePath = ObtainFilePath();
+                        verbType = "GET";
+                        filePath = ObtainFilePath();
                         break;
                     case '2':
-                        client.verbType = "POST";
-                        POST_Header(ref client);
+                        verbType = "POST";
+                        filePath = ObtainFilePath();
+                        GetGameInfo();
                         break;
                     case '3':
-                        client.verbType = "DELETE";
+                        verbType = "DELETE";
                         break;
                     case '4':
-                        client.verbType = "PUT";
+                        verbType = "PUT";
                         break;
                     default:
                         Console.WriteLine("\nPlease, select a valid option.");
@@ -39,7 +49,9 @@ namespace Client
                 }
             }
             
-            client.ClientMethod().Wait();
+            FillHeaders();
+            
+            client.Request(verbType, filePath, url, dictionary, videoGamesData).Wait();
         }
 
         public static string ObtainFilePath()
@@ -57,55 +69,39 @@ namespace Client
             return filePath;
         }
 
-        public static void POST_Header(ref Client client)
+        public static void GetGameInfo()
         {
-            char optionSelected = '\0';
-            Console.WriteLine("\nPlease, specify the operation you want to use:");
-            Console.WriteLine("\t1. Default\n\t2. Multipart Form\n\t3. Text plain");
-
-            while (optionSelected == '\0')
-            {
-                optionSelected = Console.ReadKey().KeyChar;
-
-                switch (optionSelected)
-                {
-                    case '1':
-                        client.contentType = "application/x-www-form-urlencoded";
-                        CreatePostRequest(ref client);
-                        break;
-                    case '2':
-                        client.contentType = "multipart/form-data; boundary=\"" + client.boundary + "\"";
-                        CreatePostRequest(ref client);
-                        break;
-                    case '3':
-                        client.contentType = "text/plain";
-                        client.filePath = ObtainFilePath();
-                        PlainTextBodyWriter(ref client);
-                        CreatePostRequest(ref client);
-                        break;
-                    default:
-                        Console.WriteLine("PLEASE, SELECT A CORRECT ANSWER");
-                        optionSelected = '\0';
-                        break;
-                }
-            }
-        }
-
-        public static void PlainTextBodyWriter(ref Client client)
-        {
-            Console.WriteLine("Write the plain message you want to send to Server:");
-
-            client.body = Console.ReadLine();
+            Console.WriteLine("Write the information about the game you want to send to Server:");
             
-            Console.WriteLine("\nBody text saved.");
+            Console.Write("Title: ");
+            videoGamesData.name = Console.ReadLine();
+            
+            Console.Write("Release Year: ");
+            videoGamesData.releaseYear = Console.ReadLine();
+            
+            Console.Write("Developer: ");
+            videoGamesData.developer = Console.ReadLine();
+            
+            Console.WriteLine("\nInformation saved.");
         }
 
-        public static void CreatePostRequest(ref Client client)
+        public static void SetURL()
         {
-            client.request = "HTTP/1.1\r\n"
-                             + "Host: " + client.server + "\r\n"
-                             + "Content-Type: " + client.contentType + "\r\n"
-                             + "Content-Length: " + client.body.Length + "\r\n\r\n";
+            Console.WriteLine("Write the URL of the server: ");
+            url = Console.ReadLine();
         }
+
+        public static void FillHeaders()
+        {
+            dictionary.Add("Content-Type", "text/plain");
+        }
+
+        // public static void CreatePostRequest()
+        // {
+        //     client.request = "HTTP/1.1\r\n"
+        //                      + "Host: " + client.server + "\r\n"
+        //                      + "Content-Type: text/plain\r\n"
+        //                      + "Content-Length: " + client.body.Length + "\r\n\r\n";
+        // }
     }
 }
