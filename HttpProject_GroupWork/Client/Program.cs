@@ -95,13 +95,5 @@ namespace Client
         {
             dictionary.Add("Content-Type", "text/plain");
         }
-
-        // public static void CreatePostRequest()
-        // {
-        //     client.request = "HTTP/1.1\r\n"
-        //                      + "Host: " + client.server + "\r\n"
-        //                      + "Content-Type: text/plain\r\n"
-        //                      + "Content-Length: " + client.body.Length + "\r\n\r\n";
-        // }
     }
 }

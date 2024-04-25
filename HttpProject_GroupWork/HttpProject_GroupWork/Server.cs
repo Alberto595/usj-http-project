@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
@@ -10,15 +11,23 @@ namespace HttpProject_GroupWork
     public class Server
     {
         public int port;
-        private string verbType = "";
-        private string filePath = "";
-        private string httpVersion = "";
-        private string response = "";
+        private string verbType;
+        private string filePath;
+        private string httpVersion;
+        private string response;
+        private string responseCode;
+        private string requestContent;
+        private Dictionary<string, string> headers;
         
         public Server()
         {
             this.port = 3000;
-            
+            verbType = "";
+            filePath = "";
+            httpVersion = "";
+            response = "";
+            responseCode = "";
+            headers = new Dictionary<string, string>();
         }
         
         public async Task ServerMethod()
@@ -204,7 +213,76 @@ namespace HttpProject_GroupWork
 
         public void UnpackPOST_VerbType(in string request, int count, ref int positionInRequest)
         {
+            for (int i = positionInRequest; i < count; i++) // THE FILE PATH
+            {
+                if (request[i] == ' ')
+                {
+                    positionInRequest = i + 1;
+                    break;
+                }
+                filePath += request[i];
+            }
+                
+            for (int i = positionInRequest; i < count; i++) // THE HTTP VERSION
+            {
+                if (request[i] == '\r')
+                {
+                    positionInRequest = i + 2; // we jump the \r and \n
+                    break;
+                }
+                httpVersion += request[i];
+            }
+
+            //HEADERS 
+            int headersEndIndex = request.IndexOf("\r\n\r\n");
+            int index = positionInRequest;
+
+            while (index < headersEndIndex ) // Read all the headers
+            {
+                string key = "";
+                string value = "";
+                
+                while (index < 100000) // Read each header-KEY and add it to the dictionary
+                {
+                    if (request[index] == ':')
+                    {
+                        index += 2; // we jump the : and (space)
+                        break;
+                    }
+                    
+                    key += request[index];
+                    
+                    index++;
+                }
+                
+                while (index < 100000) // Read each header-VALUE and add it to the dictionary
+                {
+                    if (request[index] == '\r')
+                    {
+                        index += 2; // we jump the \r and \n
+                        break;
+                    }
+
+                    value += request[index];
+                    
+                    index++;
+                }
+                
+                //Add to the dictionary the key and the value of the header
+                headers.Add(key, value);
+            }
             
+            //Get the content of the request (the Json data)
+            requestContent = request.Substring(headersEndIndex + 4); // +4 to omit the \r\n\r\n
+            
+            Console.WriteLine("File-Path information: " + filePath);
+            Console.WriteLine("Http-Version information: " + httpVersion);
+            Console.WriteLine("Headers:");
+            foreach (var o in headers)
+            {
+                Console.WriteLine(o.Key + ": " + o.Value);
+            }
+            Console.WriteLine("Content: \n" + requestContent);
         }
         
         public async Task<string> POST_VerbAction()
