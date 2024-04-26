@@ -289,16 +289,31 @@ namespace HttpProject_GroupWork
         {
             try
             {
-                using (StreamReader file = new StreamReader("../../../" + filePath))
+                using (FileStream fs = new FileStream("../../../" + filePath, FileMode.Append))
                 {
-                    // Read and display lines from the file until the end of
-                    // the file is reached.
-                    response = await file.ReadToEndAsync();
+                    using (StreamWriter file = new StreamWriter(fs))
+                    {
+                        // Write (append) in the file selected, if it isn't exists it creates a new file
+                        await file.WriteAsync(requestContent);
+                    }   
+                }
+                
+                responseCode = "201 Created";
+                response = "File created successfully.";
+                
+                //This is a Test to know if we can read a value from the data
+                using (FileStream fs = new FileStream("../../../" + filePath, FileMode.Open))
+                {
+                    using (StreamReader file = new StreamReader(fs))
+                    {
+                        //TODO hacer esta mierda, que lea un dato
+                    }
                 }
             }
             catch
             {
-                response = "Error 404 not found";
+                responseCode = "406 Not Acceptable";
+                response = "Error 406 Not Acceptable";
                 Console.WriteLine("The file " + filePath + " has not be found");
             }
 
