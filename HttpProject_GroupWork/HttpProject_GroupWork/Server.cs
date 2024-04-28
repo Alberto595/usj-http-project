@@ -5,6 +5,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace HttpProject_GroupWork
 {
@@ -300,13 +301,29 @@ namespace HttpProject_GroupWork
                 
                 responseCode = "201 Created";
                 response = "File created successfully.";
-                
+
+                //TODO pasar todo esto a una funcion que necesite: el nombre del juego, el filepath y las tetas de Gabriel 🥵
+                string name = "ejemplo";
                 //This is a Test to know if we can read a value from the data
                 using (FileStream fs = new FileStream("../../../" + filePath, FileMode.Open))
                 {
                     using (StreamReader file = new StreamReader(fs))
                     {
-                        //TODO hacer esta mierda, que lea un dato
+                        List<Dictionary<string,string>> videogamesData = new List<Dictionary<string,string>>();
+                        string jSonData = "";
+                        while (!file.EndOfStream)
+                        {
+                            jSonData = await file.ReadLineAsync();
+                            videogamesData.Add(JsonConvert.DeserializeObject<Dictionary<string,string>>(jSonData));
+                        }
+
+                        foreach (var videogameData in videogamesData)
+                        {
+                            if (videogameData["name"] == name)
+                            {
+                                response = JsonConvert.SerializeObject(videogameData);
+                            }
+                        }
                     }
                 }
             }

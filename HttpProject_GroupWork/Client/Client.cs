@@ -112,7 +112,7 @@ namespace Client
             //BODY
             if (data.name != "")
             {
-                this.body = JsonConvert.SerializeObject(data);
+                this.body = JsonConvert.SerializeObject(data) + "\r\n";
             }
             
             //HEADERS
