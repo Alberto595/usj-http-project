@@ -18,7 +18,8 @@ namespace HttpProject_GroupWork
         private string response;
         private string responseCode;
         private string requestContent;
-        private Dictionary<string, string> headers;
+        private Dictionary<string, string> headersFromRequest;
+        private Dictionary<string, string> headersFromResponse;
         
         public Server()
         {
@@ -28,7 +29,8 @@ namespace HttpProject_GroupWork
             httpVersion = "";
             response = "";
             responseCode = "";
-            headers = new Dictionary<string, string>();
+            headersFromRequest = new Dictionary<string, string>();
+            headersFromResponse = new Dictionary<string, string>();
         }
         
         public async Task ServerMethod()
@@ -84,7 +86,10 @@ namespace HttpProject_GroupWork
                     UnpackRequestClientInformation(in request);
 
                     //Getting the information from a file
-                    DoActionBasedOnVerb();
+                    await DoActionBasedOnVerb();
+                    
+                    //Make the response
+                    MakeTheResponse();
                     
                     // Send Response to the client
                     byte[] echoBytes = Encoding.UTF8.GetBytes(response);
@@ -107,20 +112,7 @@ namespace HttpProject_GroupWork
             int count = request.Length;
             int positionInRequest = 0;
 
-            UnpackVerbType(in request, count, ref positionInRequest);
-
-            // Get the information of the request depending on the verb type
-            switch (verbType)
-            {
-                case "GET":
-                    UnpackGET_VerbType(in request, count, ref positionInRequest);
-                    break;
-                case "POST":
-                    UnpackPOST_VerbType(in request, count, ref positionInRequest);
-                    break;
-                default:
-                    break;
-            }
+            UnpackClientRequest(in request, count, ref positionInRequest);
         }
 
         public void ResetVariables()
@@ -129,9 +121,12 @@ namespace HttpProject_GroupWork
             filePath = "";
             httpVersion = "";
             response = "";
+            responseCode = "";
+            headersFromRequest = new Dictionary<string, string>();
+            headersFromResponse = new Dictionary<string, string>();
         }
 
-        public void UnpackVerbType(in string request, int count, ref int positionInRequest)
+        public void UnpackClientRequest(in string request, int count, ref int positionInRequest)
         {
             for (int i = 0; i < count; i++) //THE VERB
             {
@@ -143,77 +138,6 @@ namespace HttpProject_GroupWork
                 verbType += request[i];
             }
             
-            Console.WriteLine("Verb information: " + verbType);
-        }
-
-        public void DoActionBasedOnVerb()
-        {
-            switch (verbType)
-            {
-                case "GET":
-                    response = GET_VerbAction().Result;
-                    break;
-                case "POST":
-                    response = POST_VerbAction().Result;
-                    break;
-                default:
-                    break;
-            }
-        }
-        
-        #region GET_VerbType
-        
-        public void UnpackGET_VerbType(in string request, int count, ref int positionInRequest)
-        {
-            for (int i = positionInRequest; i < count; i++) // THE FILE PATH
-            {
-                if (request[i] == ' ')
-                {
-                    positionInRequest = i + 1;
-                    break;
-                }
-                filePath += request[i];
-            }
-                
-            for (int i = positionInRequest; i < count; i++) // THE HTTP VERSION
-            {
-                if (request[i] == '\r')
-                {
-                    break;
-                }
-                httpVersion += request[i];
-            }
-            
-            Console.WriteLine("File-Path information: " + filePath);
-            Console.WriteLine("Http-Version information: " + httpVersion);
-        }
-
-        public async Task<string> GET_VerbAction()
-        {
-            try
-            {
-                using (StreamReader file = new StreamReader("../../../" + filePath))
-                {
-                    // Read and display lines from the file until the end of
-                    // the file is reached.
-                    response = await file.ReadToEndAsync();
-                }
-            }
-            catch
-            {
-                response = "Error 404 not found";
-                Console.WriteLine("The file " + filePath + " has not be found");
-            }
-
-            return response;
-        }
-        
-        #endregion
-
-        #region POST_VerbType
-
-        public void UnpackPOST_VerbType(in string request, int count, ref int positionInRequest)
-        {
             for (int i = positionInRequest; i < count; i++) // THE FILE PATH
             {
                 if (request[i] == ' ')
@@ -270,23 +194,126 @@ namespace HttpProject_GroupWork
                 }
                 
                 //Add to the dictionary the key and the value of the header
-                headers.Add(key, value);
+                headersFromRequest.Add(key, value);
             }
             
             //Get the content of the request (the Json data)
             requestContent = request.Substring(headersEndIndex + 4); // +4 to omit the \r\n\r\n
             
+            Console.WriteLine("Verb information: " + verbType);
             Console.WriteLine("File-Path information: " + filePath);
             Console.WriteLine("Http-Version information: " + httpVersion);
             Console.WriteLine("Headers:");
-            foreach (var o in headers)
+            foreach (var o in headersFromRequest)
             {
                 Console.WriteLine(o.Key + ": " + o.Value);
             }
             Console.WriteLine("Content: \n" + requestContent);
         }
+
+        public async Task DoActionBasedOnVerb()
+        {
+            switch (verbType)
+            {
+                case "GET":
+                    await GET_VerbAction();
+                    break;
+                case "POST":
+                    await POST_VerbAction();
+                    break;
+            }
+        }
+
+        public void MakeTheResponse()
+        {
+            //Create the minimum required headers
+            headersFromResponse.Add("Content-Type", "text/plain");
+            headersFromResponse.Add("Content-Length", response.Length.ToString());
+            
+            string tmpResponse = httpVersion + " " + responseCode + "\r\n";
+
+            foreach (var header in headersFromResponse)
+            {
+                tmpResponse += header.Key + ": " + header.Value + "\r\n";
+            }
+
+            response = tmpResponse + "\r\n" + response;
+        }
         
-        public async Task<string> POST_VerbAction()
+        #region GET_VerbType
+        public async Task GET_VerbAction()
+        {
+            //If the request Content is empty, the client wants the data file completed. Otherwise, he wants to know some Videogame-Data
+            if (requestContent == "")
+            {
+                await GetDataInformationFile();
+            }
+            else
+            {
+                int indexOfName = requestContent.IndexOf(": ") + 2;
+
+                string gameName = requestContent.Substring(indexOfName);
+                
+                GetVideogameDataFromFile(gameName);
+            }
+        }
+
+        public async Task GetDataInformationFile()
+        {
+            try
+            {
+                using (StreamReader file = new StreamReader("../../../" + filePath))
+                {
+                    // Read and display lines from the file until the end of
+                    // the file is reached.
+                    response = await file.ReadToEndAsync();
+                    responseCode = "200 OK";
+                }
+            }
+            catch
+            {
+                response = "Error 404 not found";
+                responseCode = "404 not found";
+                Console.WriteLine("The file " + filePath + " has not be found");
+            }
+        }
+        public async void GetVideogameDataFromFile(string nameOfVideogame)
+        {
+            using (FileStream fs = new FileStream("../../../" + filePath, FileMode.Open))
+            {
+                using (StreamReader file = new StreamReader(fs))
+                {
+                    List<Dictionary<string,string>> videogamesData = new List<Dictionary<string,string>>();
+                    string jSonData;
+                    while (!file.EndOfStream)
+                    {
+                        jSonData = await file.ReadLineAsync();
+                        videogamesData.Add(JsonConvert.DeserializeObject<Dictionary<string,string>>(jSonData));
+                    }
+
+                    foreach (var videogameData in videogamesData)
+                    {
+                        if (videogameData["name"] == nameOfVideogame)
+                        {
+                            response = JsonConvert.SerializeObject(videogameData);
+                            responseCode = "200 OK";
+                        }
+                    }
+
+                    if (response == "")
+                    {
+                        responseCode = "400 Bad Request";
+                        response = "Error 400 Bad Request";
+                    }
+                }
+            }
+        }
+        
+        #endregion
+
+        #region POST_VerbType
+        
+        public async Task POST_VerbAction()
         {
             try
             {
@@ -301,31 +328,6 @@ namespace HttpProject_GroupWork
                 
                 responseCode = "201 Created";
                 response = "File created successfully.";
-
-                //TODO pasar todo esto a una funcion que necesite: el nombre del juego, el filepath y las tetas de Gabriel 🥵
-                string name = "ejemplo";
-                //This is a Test to know if we can read a value from the data
-                using (FileStream fs = new FileStream("../../../" + filePath, FileMode.Open))
-                {
-                    using (StreamReader file = new StreamReader(fs))
-                    {
-                        List<Dictionary<string,string>> videogamesData = new List<Dictionary<string,string>>();
-                        string jSonData = "";
-                        while (!file.EndOfStream)
-                        {
-                            jSonData = await file.ReadLineAsync();
-                            videogamesData.Add(JsonConvert.DeserializeObject<Dictionary<string,string>>(jSonData));
-                        }
-
-                        foreach (var videogameData in videogamesData)
-                        {
-                            if (videogameData["name"] == name)
-                            {
-                                response = JsonConvert.SerializeObject(videogameData);
-                            }
-                        }
-                    }
-                }
             }
             catch
             {
@@ -333,8 +335,6 @@ namespace HttpProject_GroupWork
                 response = "Error 406 Not Acceptable";
                 Console.WriteLine("The file " + filePath + " has not be found");
             }
-
-            return response;
         }
 
         #endregion

@@ -41,9 +41,9 @@ namespace Client
                              + "Connection: close";
         }
         
-        public async Task Request(string verbType, string filepath, string url, Dictionary<string,string> headers, VideoGames_Data data)
+        public async Task Request(string verbType, string filepath, string url, Dictionary<string,string> headers, string body, VideoGames_Data data)
         {
-            AdaptRequestData(verbType, filepath, url, headers, data);
+            AdaptRequestData(verbType, filepath, url, headers, body, data);
             
             IPHostEntry ipHostInfo = await Dns.GetHostEntryAsync(server);
             IPAddress ipAddress = ipHostInfo.AddressList[0];
@@ -101,7 +101,7 @@ namespace Client
             request = verbType + " " + filePath + " " + request + "\r\n" + body;
         }
 
-        public void AdaptRequestData(string verbType, string filepath, string url, Dictionary<string,string> headers, VideoGames_Data data)
+        public void AdaptRequestData(string verbType, string filepath, string url, Dictionary<string,string> headers,string body, VideoGames_Data data)
         {
             //VERB TYPE
             this.verbType = verbType;
@@ -110,9 +110,13 @@ namespace Client
             //SERVER URL
             this.server = url;
             //BODY
-            if (data.name != "")
+            if (data.name != "") // The videogameData is not empty
             {
                 this.body = JsonConvert.SerializeObject(data) + "\r\n";
+            }
+            else if (body != "") // This is used for example when the client make a get operation, write in the body just the name to making the request
+            {
+                this.body = "name: " + body;
             }
             
             //HEADERS

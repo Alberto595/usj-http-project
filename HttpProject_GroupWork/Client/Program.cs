@@ -8,7 +8,8 @@ namespace Client
         static string verbType = "";
         static string filePath = "";
         static Dictionary<string, string> dictionary = new Dictionary<string, string>();
-        static private string url = "";
+        static string url = "";
+        private static string body = "";
         private static VideoGames_Data videoGamesData = new VideoGames_Data();
         
         public static void Main(string[] args)
@@ -29,11 +30,12 @@ namespace Client
                 {
                     case '1':
                         verbType = "GET";
-                        filePath = ObtainFilePath();
+                        ObtainFilePath();
+                        RequestVideogameName();
                         break;
                     case '2':
                         verbType = "POST";
-                        filePath = ObtainFilePath();
+                        ObtainFilePath();
                         GetGameInfo();
                         break;
                     case '3':
@@ -51,13 +53,11 @@ namespace Client
             
             FillHeaders();
             
-            client.Request(verbType, filePath, url, dictionary, videoGamesData).Wait();
+            client.Request(verbType, filePath, url, dictionary, body, videoGamesData).Wait();
         }
 
-        public static string ObtainFilePath()
+        public static void ObtainFilePath()
         {
-            string filePath;
-            
             Console.Write("\nPlease, specify the file path: ");
             filePath = Console.ReadLine();
 
@@ -65,8 +65,6 @@ namespace Client
             {
                 filePath = "/";
             }
-            
-            return filePath;
         }
 
         public static void GetGameInfo()
@@ -94,6 +92,36 @@ namespace Client
         public static void FillHeaders()
         {
             dictionary.Add("Content-Type", "text/plain");
+        }
+        
+        public static void RequestVideogameName()
+        {
+            //Ask first if the client wants to search for a specific game
+            Console.Write("Want to search information about one concrete game? Y/N: ");
+            char questionResponse = '\0';
+            while (questionResponse == '\0')
+            {
+                questionResponse = Console.ReadKey().KeyChar;
+
+                switch (questionResponse)
+                {
+                    case 'y':
+                    case 'Y':
+                        break;
+                    case 'n':
+                    case 'N':
+                        return;
+                    default:
+                        Console.WriteLine("Please select a valid option. Y/N: ");
+                        questionResponse = '\0';
+                        break;
+                }
+            }
+            
+            
+            Console.Write("\nWrite the name of the game you want to request: ");
+            body = Console.ReadLine();
+            Console.WriteLine();
         }
     }
 }
