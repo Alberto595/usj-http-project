@@ -120,7 +120,7 @@ public class Client
         //BODY
         if (data.name != "") // The videogameData is not empty
         {
-            this.body = JsonUtility.ToJson(data) + "\r\n";
+            this.body = JsonUtility.ToJson(data);
         }
         else if (body != "") // This is used for example when the client make a get operation, write in the body just the name to making the request
         {

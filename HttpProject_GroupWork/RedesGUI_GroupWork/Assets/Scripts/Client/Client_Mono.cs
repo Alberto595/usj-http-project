@@ -6,7 +6,8 @@ using UnityEngine;
 
 public class Client_Mono : MonoBehaviour
 {
-    public VideoGames_Data videoGamesData = new VideoGames_Data("juego1", "2024", "Gabriel");
+    public VideoGames_Data videoGamesData = new VideoGames_Data("Call of Duty", "2024", "Alberto&TuMadre");
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -20,6 +21,6 @@ public class Client_Mono : MonoBehaviour
         Dictionary<string, string> headers = new Dictionary<string, string>();
         headers.Add("Content-type", "text/plain");
         
-        client.Request("GET",UrlManager.Instance.pathToSaveVideogameData,"localhost", headers,"", new VideoGames_Data());
+        client.Request("DELETE",UrlManager.Instance.pathToSaveVideogameData,"localhost", headers,"", videoGamesData);
     }
 }

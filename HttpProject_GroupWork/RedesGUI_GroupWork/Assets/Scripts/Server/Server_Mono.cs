@@ -11,10 +11,4 @@ public class Server_Mono : MonoBehaviour
     {
         server.ServerMethod();
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }
