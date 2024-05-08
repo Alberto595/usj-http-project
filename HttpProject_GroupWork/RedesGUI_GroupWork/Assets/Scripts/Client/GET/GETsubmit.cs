@@ -6,13 +6,13 @@ using UnityEngine;
 public class GETsubmit : MonoBehaviour
 {
     [SerializeField]
-    TMP_Text[] bodyFields;
+    TMP_InputField[] bodyFields;
 
     [SerializeField]
     string bodyToSend;
 
     [SerializeField]
-    TMP_Text[] headerValueFields; //fields must be in order
+    TMP_InputField[] headerValueFields; //fields must be in order
 
     [SerializeField]
     string[] headerKeyFields; //fields must be in order
@@ -23,21 +23,9 @@ public class GETsubmit : MonoBehaviour
     [SerializeField]
     Client_Mono client;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     public void SendGET()
     {
-        foreach(TMP_Text b in bodyFields)
+        foreach(TMP_InputField b in bodyFields)
         {
             bodyToSend += b.text;
         }
@@ -51,7 +39,16 @@ public class GETsubmit : MonoBehaviour
         client.AcceptRequestFromButton("GET", headersToSend, bodyToSend, gamedata);
 
         //re-initialize all data
+        foreach (TMP_InputField t in bodyFields)
+        {
+            t.text = "";
+        }
         bodyToSend = "";
+
+        foreach (TMP_InputField t in headerValueFields)
+        {
+            t.text = "";
+        }
         headersToSend = new Dictionary<string, string>();
 
     }

@@ -298,11 +298,12 @@ namespace HttpProject_GroupWork
                         videogamesData.Add(JsonUtility.FromJson<VideoGames_Data>(jSonData));
                     }
 
+                    response = "";
                     foreach (var videogameData in videogamesData)
                     {
-                        if (videogameData.name == nameOfVideogame)
+                        if (videogameData.name.Contains(nameOfVideogame))
                         {
-                            response = JsonUtility.ToJson(videogameData);
+                            response += JsonUtility.ToJson(videogameData) + "\r\n";
                             responseCode = "200 OK";
                         }
                     }

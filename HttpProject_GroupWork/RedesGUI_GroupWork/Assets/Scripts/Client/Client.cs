@@ -43,6 +43,14 @@ public class Client
         this.filePath = filePath;
     }
 
+    public void ResetVariables()
+    {
+        request = "";
+        verbType = "";
+        body = "";
+        filePath = "/";
+    }
+
     public async Task Request(string verbType, string filepath, string url, Dictionary<string, string> headers,
         string body, VideoGames_Data data)
     {
@@ -92,20 +100,50 @@ public class Client
             string message = fullMessage.ToString();
 
             Debug.Log("The server sends the next information: \r\n" + message);
+
+            //update the game panel info
+            List<VideoGames_Data> gamesInfo = UnpackRequestClientInformation(message);
+            GamePanel.Instance.UpdateGamePanel(gamesInfo);
+
         }
         catch (Exception e)
         {
             Debug.Log("Retrieved the server's data information fails: " + e);
             throw;
         }
-
-
-        client.Shutdown(SocketShutdown.Both);
+        finally
+        {
+            ResetVariables();
+            client.Shutdown(SocketShutdown.Both);
+        }
     }
 
     public void BuildRequest()
     {
         request = verbType + " " + filePath + " " + request + "\r\n" + body;
+    }
+    
+    /// <summary>
+    /// Separate the client information to know what to send back. E.g. FilePath, VerbType, etc.
+    /// </summary>
+    public List<VideoGames_Data> UnpackRequestClientInformation(in string reply)
+    {
+        int headersEndIndex = reply.IndexOf("\r\n\r\n");
+        
+        string replycontent = reply.Substring(headersEndIndex + 4); // +4 to omit the \r\n\r\n
+        
+        Debug.Log("Content: \n" + replycontent);
+
+        List<VideoGames_Data> gameList = new List<VideoGames_Data>();
+        string[] games = replycontent.Split("\r\n");
+        int count = games.Length - 1;
+        for (int i = 0; i < count; i++)
+        {
+            string tmp = games[i];
+            gameList.Add(JsonUtility.FromJson<VideoGames_Data>(games[i]));
+        }
+
+        return gameList;
     }
 
     public void AdaptRequestData(string verbType, string filepath, string url, Dictionary<string, string> headers,
