@@ -6,6 +6,9 @@ using UnityEngine;
 public abstract class VerbSubmit : MonoBehaviour
 {
     [SerializeField]
+    protected GameObject sentBanner;
+
+    [SerializeField]
     protected TMP_InputField[] bodyFields;
 
     [SerializeField]
@@ -53,6 +56,9 @@ public abstract class VerbSubmit : MonoBehaviour
             t.text = "";
         }
         headersToSend = new Dictionary<string, string>();
+
+        //create animation of request sent
+        sentBanner.GetComponent<SentBanner>().Appear();
 
     }
 
