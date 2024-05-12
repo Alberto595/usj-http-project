@@ -4,6 +4,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using TMPro;
 using UnityEngine;
 
 public class Client
@@ -18,6 +19,9 @@ public class Client
     public string verbType;
 
     public string body = "";
+
+    //UI variables
+    public ClientServerMessages UImessages;
 
     //Global Variables
     public string filePath = "/";
@@ -78,6 +82,9 @@ public class Client
         _ = await client.SendAsync(messageBytesSegment, SocketFlags.None);
         Debug.Log($"Socket client sent message: \n\"{request}\"");
 
+        //send the message to the text field in the UI
+        UImessages.ChangeClientText(request);
+
         try
         {
             const int bufferSize = 1024;
@@ -104,6 +111,9 @@ public class Client
             //update the game panel info
             List<VideoGames_Data> gamesInfo = UnpackRequestClientInformation(message);
             GamePanel.Instance.UpdateGamePanel(gamesInfo);
+
+            //update UI message for server
+            UImessages.ChangeServerText(message);
 
         }
         catch (Exception e)

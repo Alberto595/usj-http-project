@@ -8,6 +8,7 @@ using UnityEngine;
 public class Client_Mono : MonoBehaviour
 {
     public VideoGames_Data videoGamesData = new VideoGames_Data("Call of Duty", "2024", "Alberto&TuMadre");
+    public ClientServerMessages UImessages;
 
     private Client client;
     
@@ -20,6 +21,7 @@ public class Client_Mono : MonoBehaviour
     public void InitiateClient()
     {
         client = new Client("localhost",3000, "GET", "", UrlManager.Instance.pathToSaveVideogameData);
+        client.UImessages = UImessages;
         
         Dictionary<string, string> headers = new Dictionary<string, string>();
         headers.Add("Content-type", "text/plain");
