@@ -3,29 +3,32 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public class GETsubmit : MonoBehaviour
+public abstract class VerbSubmit : MonoBehaviour
 {
     [SerializeField]
-    TMP_InputField[] bodyFields;
+    protected TMP_InputField[] bodyFields;
 
     [SerializeField]
-    string bodyToSend;
+    protected string bodyToSend;
 
     [SerializeField]
-    TMP_InputField[] headerValueFields; //fields must be in order
+    protected TMP_InputField[] headerValueFields; //fields must be in order
 
     [SerializeField]
-    string[] headerKeyFields; //fields must be in order
+    protected string[] headerKeyFields; //fields must be in order
 
     [SerializeField]
-    Dictionary<string,string> headersToSend;
+    protected Dictionary<string, string> headersToSend;
 
     [SerializeField]
-    Client_Mono client;
+    protected Client_Mono client;
 
-    public void SendGET()
+    protected string verb = "";
+
+    public abstract VideoGames_Data CreateGameInfo();
+    public void SendVerbRequest()
     {
-        foreach(TMP_InputField b in bodyFields)
+        foreach (TMP_InputField b in bodyFields)
         {
             bodyToSend += b.text;
         }
@@ -35,8 +38,8 @@ public class GETsubmit : MonoBehaviour
             headersToSend.Add(headerKeyFields[i], headerValueFields[i].text);
         }
 
-        VideoGames_Data gamedata = new VideoGames_Data("", "", "");
-        client.AcceptRequestFromButton("GET", headersToSend, bodyToSend, gamedata);
+        VideoGames_Data gamedata = CreateGameInfo();
+        client.AcceptRequestFromButton(verb, headersToSend, bodyToSend, gamedata);
 
         //re-initialize all data
         foreach (TMP_InputField t in bodyFields)
@@ -52,5 +55,8 @@ public class GETsubmit : MonoBehaviour
         headersToSend = new Dictionary<string, string>();
 
     }
+
+    
+
 
 }

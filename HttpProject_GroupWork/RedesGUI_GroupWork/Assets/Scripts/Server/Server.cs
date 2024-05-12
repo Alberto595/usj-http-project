@@ -301,7 +301,9 @@ namespace HttpProject_GroupWork
                     response = "";
                     foreach (var videogameData in videogamesData)
                     {
-                        if (videogameData.name.Contains(nameOfVideogame))
+                        //bool isContained = videogameData.name.Contains(nameOfVideogame);
+                        bool isContained = videogameData.name.IndexOf(nameOfVideogame, StringComparison.OrdinalIgnoreCase) >= 0;
+                        if (isContained)
                         {
                             response += JsonUtility.ToJson(videogameData) + "\r\n";
                             responseCode = "200 OK";
