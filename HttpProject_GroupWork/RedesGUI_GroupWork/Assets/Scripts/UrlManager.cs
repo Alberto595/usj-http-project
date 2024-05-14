@@ -14,6 +14,9 @@ public class UrlManager : MonoBehaviour
     public string pathToSaveVideogameData;
     public string pathToSaveUsersData;
 
+    private static List<string> files;
+    public static List<string> Files { get { return files; } }
+
     private void Awake()
     {
         if (instance != null && instance != this)
@@ -23,10 +26,21 @@ public class UrlManager : MonoBehaviour
         else
         {
             instance = this;
-            pathToSaveVideogameData = Application.dataPath + "/VideoGame_Data.data";
+            pathToSaveVideogameData = Application.dataPath + "/PS5.data";
             pathToSaveUsersData = Application.dataPath + "/Users_Data.data";
         }
         
         DontDestroyOnLoad(this);
+
+        files = new List<string> { "PS5", "Xbox", "Switch" };
+        
+
     }
+
+    public void ChangePath(string newFile)
+    {
+        pathToSaveVideogameData = Application.dataPath + "/" + newFile + ".data";
+
+    }
+
 }

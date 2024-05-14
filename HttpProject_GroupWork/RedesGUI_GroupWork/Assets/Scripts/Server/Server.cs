@@ -228,6 +228,9 @@ namespace HttpProject_GroupWork
                 case "DELETE":
                     DELETE_VerbAction();
                     break;
+                case "HEAD":
+                    HEAD_VerbAction();
+                    break;
             }
         }
 
@@ -434,7 +437,7 @@ namespace HttpProject_GroupWork
 
         #endregion
         
-        #region PUT_VerbType
+        #region DELETE_VerbType
 
         private void DELETE_VerbAction()
         {
@@ -443,7 +446,7 @@ namespace HttpProject_GroupWork
                 File.Delete(filePath);
                 
                 responseCode = "204 No Content";
-                response = "Error 204 No Content";
+                response = "No Content";
             }
             else
             {
@@ -451,7 +454,26 @@ namespace HttpProject_GroupWork
                 response = "Error 404 Not Found";
             }
         }
-        
+
+        #endregion
+
+        #region HEAD_verbType
+
+        private void HEAD_VerbAction()
+        {
+            if (File.Exists(filePath))
+            {
+
+                responseCode = "200 OK";
+                response = "OK";
+            }
+            else
+            {
+                responseCode = "404 Not Found";
+                response = "Error 404 Not Found";
+            }
+        }
+
         #endregion
     }
 }
