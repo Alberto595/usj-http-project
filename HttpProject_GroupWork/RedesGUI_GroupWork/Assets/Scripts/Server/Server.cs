@@ -21,7 +21,10 @@ namespace HttpProject_GroupWork
         private string requestContent;
         private Dictionary<string, string> headersFromRequest;
         private Dictionary<string, string> headersFromResponse;
-        
+        private DateTime ps5LastDate;
+        private DateTime xboxLastDate;
+        private DateTime switchLastDate;
+        private DateTime modifyDate;
         public Server()
         {
             this.port = 3000;
@@ -185,6 +188,7 @@ namespace HttpProject_GroupWork
                 
                 //Add to the dictionary the key and the value of the header
                 headersFromRequest.Add(key, value);
+                Debug.Log("Estos son los headers: " + headersFromRequest.ToString());
             }
             
             //Get the content of the request (the Json data)
@@ -256,15 +260,21 @@ namespace HttpProject_GroupWork
             //If the request Content is empty, the client wants the data file completed. Otherwise, he wants to know some Videogame-Data
             if (requestContent == "")
             {
-                await GetDataInformationFile();
+              //if (!modifyDate.Equals(aqui iria la fecha del get)){
+                    await GetDataInformationFile();
+               //}
+
+                
             }
             else
             {
-                int indexOfName = requestContent.IndexOf(": ") + 2;
+                //if (!modifyDate.Equals(aqui iria la fecha del get)){
+                    int indexOfName = requestContent.IndexOf(": ") + 2;
 
-                string gameName = requestContent.Substring(indexOfName);
+                    string gameName = requestContent.Substring(indexOfName);
                 
-                GetVideogameDataFromFile(gameName);
+                    GetVideogameDataFromFile(gameName);
+                //}
             }
         }
 
@@ -334,8 +344,10 @@ namespace HttpProject_GroupWork
                 {
                     using (StreamWriter file = new StreamWriter(fs))
                     {
+
                         // Write (append) in the file selected, if it isn't exists it creates a new file
                         await file.WriteLineAsync(requestContent);
+                        modifyDate = DateTime.Now;
                     }   
                 }
                 
@@ -421,7 +433,7 @@ namespace HttpProject_GroupWork
                         {
                             await sw.WriteLineAsync(data);
                         }
-
+                        modifyDate = DateTime.Now;
                         responseCode = "214 Transformation Applied";
                         response = "Transformation Applied.";
                     }

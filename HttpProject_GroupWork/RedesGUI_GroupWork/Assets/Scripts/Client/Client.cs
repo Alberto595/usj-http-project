@@ -26,6 +26,8 @@ public class Client
     //Global Variables
     public string filePath = "/";
 
+    private bool firstGet = true;
+    public DateTime date;
 
     public Client(string verb = "GET", string server = "localhost")
     {
@@ -130,7 +132,27 @@ public class Client
 
     public void BuildRequest()
     {
-        request = verbType + " " + filePath + " " + request + "\r\n" + body;
+        if (verbType == "GET")
+        {
+            if (firstGet)
+            {
+                date = DateTime.Now;
+                //copiar cache
+                firstGet = false;
+                Debug.Log("la fecha: " + date + " he cambiado?: " + firstGet);
+            }
+
+            string dateHTTP = date.ToUniversalTime().ToString("R");
+            request = verbType + " " + filePath + " " + request + "If-Modified-Since: " + dateHTTP + "\r\n" + body;
+            
+        }
+        else
+        {
+            request = verbType + " " + filePath + " " + request + "\r\n" + body;
+        }
+       
+        
+        Debug.Log("this is the request: " + request);
     }
     
     /// <summary>
