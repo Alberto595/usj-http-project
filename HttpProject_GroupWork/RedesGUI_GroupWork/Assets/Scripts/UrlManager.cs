@@ -23,8 +23,8 @@ public class UrlManager : MonoBehaviour
         else
         {
             instance = this;
-            pathToSaveVideogameData = Application.persistentDataPath + "/VideoGame_Data.data";
-            pathToSaveUsersData = Application.persistentDataPath + "/Users_Data.data";
+            pathToSaveVideogameData = Application.dataPath + "/VideoGame_Data.data";
+            pathToSaveUsersData = Application.dataPath + "/Users_Data.data";
         }
         
         DontDestroyOnLoad(this);
