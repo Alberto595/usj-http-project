@@ -42,8 +42,24 @@ public abstract class VerbSubmit : MonoBehaviour
         }
 
         VideoGames_Data gamedata = CreateGameInfo();
+
+        if(gamedata.IsEmpty() && (verb == "POST" || verb == "PUT"))
+        {
+            ReinitializeData();
+            return;
+        }
+
         client.AcceptRequestFromButton(verb, headersToSend, bodyToSend, gamedata);
 
+        ReinitializeData();
+
+        //create animation of request sent
+        sentBanner.GetComponent<SentBanner>().Appear();
+
+    }
+
+    private void ReinitializeData()
+    {
         //re-initialize all data
         foreach (TMP_InputField t in bodyFields)
         {
@@ -56,13 +72,7 @@ public abstract class VerbSubmit : MonoBehaviour
             t.text = "";
         }
         headersToSend = new Dictionary<string, string>();
-
-        //create animation of request sent
-        sentBanner.GetComponent<SentBanner>().Appear();
-
     }
-
-    
 
 
 }
