@@ -30,6 +30,8 @@ public class Client
     public DateTime ps5Date;
     public DateTime xboxDate;
     public DateTime switchDate;
+    public string console = null;
+    public string dateHTTP = null;
     public Client(string verb = "GET", string server = "localhost")
     {
         this.server = server;
@@ -133,18 +135,42 @@ public class Client
 
     public void BuildRequest()
     {
+        
         if (verbType == "GET")
         {
+           
+            UpdateDate();
+            Debug.Log("esta es la consola: " + console);
             if (firstGet)
             {
-                date = DateTime.Now;
                 //copiar cache
                 firstGet = false;
-                Debug.Log("la fecha: " + date + " he cambiado?: " + firstGet);
+          
             }
+            // depending on the console you are accesing sends the request with its respective date
+            switch (console)
+            {
+                case "atad.5SP":
 
-            string dateHTTP = date.ToUniversalTime().ToString("R");
-            request = verbType + " " + filePath + " " + request + "If-Modified-Since: " + dateHTTP + "\r\n\r\n" + body;
+                        dateHTTP = ps5Date.ToUniversalTime().ToString("R");                                                                         //transforms into http date time format(GMT)
+                        request = verbType + " " + filePath + " " + request + "If-Modified-Since: " + dateHTTP + "\r\n\r\n" + body;
+                        dateHTTP = null;                                                                                                            //resets the string into "null" in case it mixes
+                    break;
+                case "atad.xobX":
+                        
+                        dateHTTP = xboxDate.ToUniversalTime().ToString("R");
+                        request = verbType + " " + filePath + " " + request + "If-Modified-Since: " + dateHTTP + "\r\n\r\n" + body;
+                        dateHTTP = null;
+                    break;
+                case "atad.hctiwS":
+
+                        dateHTTP = switchDate.ToUniversalTime().ToString("R");
+                        request = verbType + " " + filePath + " " + request + "If-Modified-Since: " + dateHTTP + "\r\n\r\n" + body;
+                        dateHTTP = null;
+                    break;
+                default: break;
+            }
+           
             
         }
         else
@@ -162,7 +188,7 @@ public class Client
     public List<VideoGames_Data> UnpackRequestClientInformation(in string reply)
     {
         int headersEndIndex = reply.IndexOf("\r\n\r\n");
-        
+       
         string replycontent = reply.Substring(headersEndIndex + 4); // +4 to omit the \r\n\r\n
         
         Debug.Log("Content: \n" + replycontent);
@@ -211,27 +237,27 @@ public class Client
     public void UpdateDate()
     {
         
-        string console = "\0";
-        for(int i = filePath.Length; i >= 0; i--)
+        console = null;
+        //Takes the path ?.data
+        for(int i = filePath.Length-1; i >= 0; i--)
         {
-            if (filePath[i] == '/')
-            {
-                break;
-            }
-            else
+            if (filePath[i] != '/' )
             {
                 console += filePath[i];
             }
+            else { break; }
+           
         }
+        //Updates the time you are accesing to this info
         switch (console)
         {
-            case "data.PS5":
+            case "atad.5SP":
                     ps5Date = DateTime.Now;
                 break;
-            case "data.Xbox":
+            case "atad.xobX":
                 xboxDate = DateTime.Now;
                 break;
-            case "data.Switch":
+            case "atad.hctiwS":
                 switchDate = DateTime.Now;
                 break;
              default: break;

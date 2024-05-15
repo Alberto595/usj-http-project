@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq.Expressions;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -357,7 +358,31 @@ namespace HttpProject_GroupWork
 
                         // Write (append) in the file selected, if it isn't exists it creates a new file
                         await file.WriteLineAsync(requestContent);
-                        modifyDate = DateTime.Now;
+                        string console = null;
+                        //Takes the path ?.data
+                        for (int i = filePath.Length - 1; i >= 0; i--)
+                        {
+                            if (filePath[i] != '/')
+                            {
+                                console += filePath[i];
+                            }
+                            else { break; }
+
+                        }
+                        //Updates the time you are accesing to this info
+                        switch (console)
+                        {
+                            case "atad.5SP":
+                                ps5LastDate = DateTime.Now;
+                                break;
+                            case "atad.xobX":
+                                xboxLastDate = DateTime.Now;
+                                break;
+                            case "atad.hctiwS":
+                                switchLastDate = DateTime.Now;
+                                break;
+                            default: break;
+                        }
                     }   
                 }
                 
@@ -443,7 +468,31 @@ namespace HttpProject_GroupWork
                         {
                             await sw.WriteLineAsync(data);
                         }
-                        modifyDate = DateTime.Now;
+                        string console = null;
+                        //Takes the path ?.data
+                        for (int i = filePath.Length - 1; i >= 0; i--)
+                        {
+                            if (filePath[i] != '/')
+                            {
+                                console += filePath[i];
+                            }
+                            else { break; }
+
+                        }
+                        //Updates the time you are accesing to this info
+                        switch (console)
+                        {
+                            case "atad.5SP":
+                                ps5LastDate = DateTime.Now;
+                                break;
+                            case "atad.xobX":
+                                xboxLastDate = DateTime.Now;
+                                break;
+                            case "atad.hctiwS":
+                                switchLastDate = DateTime.Now;
+                                break;
+                            default: break;
+                        }
                         responseCode = "214 Transformation Applied";
                         response = "Transformation Applied.";
                     }
@@ -475,8 +524,11 @@ namespace HttpProject_GroupWork
                 responseCode = "404 Not Found";
                 response = "Error 404 Not Found";
             }
+            ps5LastDate = DateTime.Now;
+            xboxLastDate = DateTime.Now;
+            switchLastDate = DateTime.Now;
         }
-
+  
         #endregion
 
         #region HEAD_verbType
