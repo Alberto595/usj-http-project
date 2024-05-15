@@ -27,8 +27,9 @@ public class Client
     public string filePath = "/";
 
     private bool firstGet = true;
-    public DateTime date;
-
+    public DateTime ps5Date;
+    public DateTime xboxDate;
+    public DateTime switchDate;
     public Client(string verb = "GET", string server = "localhost")
     {
         this.server = server;
@@ -143,7 +144,7 @@ public class Client
             }
 
             string dateHTTP = date.ToUniversalTime().ToString("R");
-            request = verbType + " " + filePath + " " + request + "If-Modified-Since: " + dateHTTP + "\r\n" + body;
+            request = verbType + " " + filePath + " " + request + "If-Modified-Since: " + dateHTTP + "\r\n\r\n" + body;
             
         }
         else
@@ -206,5 +207,34 @@ public class Client
         }
 
         this.request += "Content-Length: " + this.body.Length + "\r\n";
+    }
+    public void UpdateDate()
+    {
+        
+        string console = "\0";
+        for(int i = filePath.Length; i >= 0; i--)
+        {
+            if (filePath[i] == '/')
+            {
+                break;
+            }
+            else
+            {
+                console += filePath[i];
+            }
+        }
+        switch (console)
+        {
+            case "data.PS5":
+                    ps5Date = DateTime.Now;
+                break;
+            case "data.Xbox":
+                xboxDate = DateTime.Now;
+                break;
+            case "data.Switch":
+                switchDate = DateTime.Now;
+                break;
+             default: break;
+        }
     }
 }

@@ -25,6 +25,7 @@ namespace HttpProject_GroupWork
         private DateTime xboxLastDate;
         private DateTime switchLastDate;
         private DateTime modifyDate;
+        private DateTime getDate;
         public Server()
         {
             this.port = 3000;
@@ -185,10 +186,13 @@ namespace HttpProject_GroupWork
                     
                     index++;
                 }
+                //Takes the date and converts it into a datetime variable
+                if(key == "If-Modified-Since") { getDate = DateTime.Parse(value); }
+                Debug.Log("la fecha del get: " + getDate);
                 
                 //Add to the dictionary the key and the value of the header
                 headersFromRequest.Add(key, value);
-                Debug.Log("Estos son los headers: " + headersFromRequest.ToString());
+                Debug.Log("Esta es la key: " + key + "\nEste es el value: " + value);
             }
             
             //Get the content of the request (the Json data)
@@ -257,24 +261,30 @@ namespace HttpProject_GroupWork
         #region GET_VerbType
         public async Task GET_VerbAction()
         {
+           
             //If the request Content is empty, the client wants the data file completed. Otherwise, he wants to know some Videogame-Data
             if (requestContent == "")
             {
-              //if (!modifyDate.Equals(aqui iria la fecha del get)){
+                if (modifyDate < getDate)
+                {
                     await GetDataInformationFile();
-               //}
+                }
+                else
+                {
+
+                }
 
                 
             }
             else
             {
-                //if (!modifyDate.Equals(aqui iria la fecha del get)){
+                if (modifyDate < getDate) { 
                     int indexOfName = requestContent.IndexOf(": ") + 2;
 
                     string gameName = requestContent.Substring(indexOfName);
                 
                     GetVideogameDataFromFile(gameName);
-                //}
+                }
             }
         }
 
