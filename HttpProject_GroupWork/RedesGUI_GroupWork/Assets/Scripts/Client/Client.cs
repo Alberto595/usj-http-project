@@ -26,7 +26,7 @@ public class Client
     //Global Variables
     public string filePath = "/";
 
-    private bool firstGet = true;
+    public bool firstGet = true;
     public DateTime ps5Date;
     public DateTime xboxDate;
     public DateTime switchDate;
@@ -262,5 +262,10 @@ public class Client
                 break;
              default: break;
         }
+    }
+
+    public bool GetFirstTime()
+    {
+        return firstGet;
     }
 }

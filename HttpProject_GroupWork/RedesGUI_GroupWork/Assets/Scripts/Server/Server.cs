@@ -27,6 +27,7 @@ namespace HttpProject_GroupWork
         private DateTime switchLastDate;
         private DateTime modifyDate;
         private DateTime getDate;
+        private bool firstTime =  true;
         public Server()
         {
             this.port = 3000;
@@ -266,9 +267,12 @@ namespace HttpProject_GroupWork
             //If the request Content is empty, the client wants the data file completed. Otherwise, he wants to know some Videogame-Data
             if (requestContent == "")
             {
-                if (modifyDate < getDate)
+                //AQUI TENGO QUE VOLVER A HACER LA COMPROBACION DE LAS FECHAS DE LAS CONSOLAS EN LUGAR DE USAR MODIFY DATE
+                if (modifyDate > getDate || firstTime)
                 {
                     await GetDataInformationFile();
+                    modifyDate = DateTime.Now;
+                    firstTime = false;
                 }
                 else
                 {
@@ -279,12 +283,14 @@ namespace HttpProject_GroupWork
             }
             else
             {
-                if (modifyDate < getDate) { 
+                if (modifyDate > getDate || firstTime) { 
                     int indexOfName = requestContent.IndexOf(": ") + 2;
 
                     string gameName = requestContent.Substring(indexOfName);
                 
                     GetVideogameDataFromFile(gameName);
+                    modifyDate =  DateTime.Now;
+                    firstTime = false;
                 }
             }
         }
