@@ -138,8 +138,8 @@ public class Client
         
         if (verbType == "GET")
         {
-           
-            UpdateDate();
+
+            UpdateConsole();
             Debug.Log("esta es la consola: " + console);
             if (firstGet)
             {
@@ -154,19 +154,22 @@ public class Client
 
                         dateHTTP = ps5Date.ToUniversalTime().ToString("R");                                                                         //transforms into http date time format(GMT)
                         request = verbType + " " + filePath + " " + request + "If-Modified-Since: " + dateHTTP + "\r\n\r\n" + body;
-                        dateHTTP = null;                                                                                                            //resets the string into "null" in case it mixes
+                        dateHTTP = null;
+                        UpdateDate();
                     break;
                 case "atad.xobX":
                         
                         dateHTTP = xboxDate.ToUniversalTime().ToString("R");
                         request = verbType + " " + filePath + " " + request + "If-Modified-Since: " + dateHTTP + "\r\n\r\n" + body;
                         dateHTTP = null;
+                        UpdateDate();
                     break;
                 case "atad.hctiwS":
 
                         dateHTTP = switchDate.ToUniversalTime().ToString("R");
                         request = verbType + " " + filePath + " " + request + "If-Modified-Since: " + dateHTTP + "\r\n\r\n" + body;
                         dateHTTP = null;
+                        UpdateDate();
                     break;
                 default: break;
             }
@@ -237,17 +240,7 @@ public class Client
     public void UpdateDate()
     {
         
-        console = null;
-        //Takes the path ?.data
-        for(int i = filePath.Length-1; i >= 0; i--)
-        {
-            if (filePath[i] != '/' )
-            {
-                console += filePath[i];
-            }
-            else { break; }
-           
-        }
+       
         //Updates the time you are accesing to this info
         switch (console)
         {
@@ -263,7 +256,20 @@ public class Client
              default: break;
         }
     }
+    public void UpdateConsole()
+    {
+        console = null;
+        //Takes the path ?.data
+        for (int i = filePath.Length - 1; i >= 0; i--)
+        {
+            if (filePath[i] != '/')
+            {
+                console += filePath[i];
+            }
+            else { break; }
 
+        }
+    }
     public bool GetFirstTime()
     {
         return firstGet;

@@ -15,6 +15,7 @@ namespace HttpProject_GroupWork
     {
         public int port;
         private string verbType;
+       
         private string filePath;
         private string httpVersion;
         private string response;
@@ -263,12 +264,14 @@ namespace HttpProject_GroupWork
         #region GET_VerbType
         public async Task GET_VerbAction()
         {
-           
+            // takes the date depending of the console
+            DateTime comparingDate = GetDateFromPath();
+            
             //If the request Content is empty, the client wants the data file completed. Otherwise, he wants to know some Videogame-Data
             if (requestContent == "")
             {
-                //AQUI TENGO QUE VOLVER A HACER LA COMPROBACION DE LAS FECHAS DE LAS CONSOLAS EN LUGAR DE USAR MODIFY DATE
-                if (modifyDate > getDate || firstTime)
+                
+                if (comparingDate > getDate || firstTime)
                 {
                     await GetDataInformationFile();
                     modifyDate = DateTime.Now;
@@ -283,7 +286,7 @@ namespace HttpProject_GroupWork
             }
             else
             {
-                if (modifyDate > getDate || firstTime) { 
+                if (comparingDate > getDate || firstTime) { 
                     int indexOfName = requestContent.IndexOf(": ") + 2;
 
                     string gameName = requestContent.Substring(indexOfName);
@@ -291,6 +294,10 @@ namespace HttpProject_GroupWork
                     GetVideogameDataFromFile(gameName);
                     modifyDate =  DateTime.Now;
                     firstTime = false;
+                }
+                else
+                {
+
                 }
             }
         }
@@ -364,31 +371,8 @@ namespace HttpProject_GroupWork
 
                         // Write (append) in the file selected, if it isn't exists it creates a new file
                         await file.WriteLineAsync(requestContent);
-                        string console = null;
-                        //Takes the path ?.data
-                        for (int i = filePath.Length - 1; i >= 0; i--)
-                        {
-                            if (filePath[i] != '/')
-                            {
-                                console += filePath[i];
-                            }
-                            else { break; }
-
-                        }
-                        //Updates the time you are accesing to this info
-                        switch (console)
-                        {
-                            case "atad.5SP":
-                                ps5LastDate = DateTime.Now;
-                                break;
-                            case "atad.xobX":
-                                xboxLastDate = DateTime.Now;
-                                break;
-                            case "atad.hctiwS":
-                                switchLastDate = DateTime.Now;
-                                break;
-                            default: break;
-                        }
+                        //Updates the date of the file depending of the console
+                        UpdateDate();
                     }   
                 }
                 
@@ -474,31 +458,8 @@ namespace HttpProject_GroupWork
                         {
                             await sw.WriteLineAsync(data);
                         }
-                        string console = null;
-                        //Takes the path ?.data
-                        for (int i = filePath.Length - 1; i >= 0; i--)
-                        {
-                            if (filePath[i] != '/')
-                            {
-                                console += filePath[i];
-                            }
-                            else { break; }
-
-                        }
-                        //Updates the time you are accesing to this info
-                        switch (console)
-                        {
-                            case "atad.5SP":
-                                ps5LastDate = DateTime.Now;
-                                break;
-                            case "atad.xobX":
-                                xboxLastDate = DateTime.Now;
-                                break;
-                            case "atad.hctiwS":
-                                switchLastDate = DateTime.Now;
-                                break;
-                            default: break;
-                        }
+                        //Updates the date of the file depending of the console
+                        UpdateDate();
                         responseCode = "214 Transformation Applied";
                         response = "Transformation Applied.";
                     }
@@ -555,5 +516,69 @@ namespace HttpProject_GroupWork
         }
 
         #endregion
+
+        #region GetDateFromPath
+        private DateTime GetDateFromPath()
+        {
+            string console = null;
+            for (int i = filePath.Length - 1; i >= 0; i--)
+            {
+                if (filePath[i] != '/')
+                {
+                    console += filePath[i];
+                }
+                else { break; }
+
+            }
+            switch (console)
+            {
+                case "atad.5SP":
+                    return ps5LastDate;
+                    
+                case "atad.xobX":
+                    return xboxLastDate;
+                    
+                case "atad.hctiwS":
+                    return switchLastDate;
+                
+                
+            }
+            
+            return DateTime.Now;
+        }
+        #endregion
+
+        #region UpdateDate
+        public void UpdateDate()
+        {
+
+            string console = null;
+            //Takes the path ?.data
+            for (int i = filePath.Length - 1; i >= 0; i--)
+            {
+                if (filePath[i] != '/')
+                {
+                    console += filePath[i];
+                }
+                else { break; }
+
+            }
+            //Updates the time you are accesing to this info
+            switch (console)
+            {
+                case "atad.5SP":
+                    ps5LastDate = DateTime.Now;
+                    break;
+                case "atad.xobX":
+                    xboxLastDate = DateTime.Now;
+                    break;
+                case "atad.hctiwS":
+                    switchLastDate = DateTime.Now;
+                    break;
+                default: break;
+            }
+        }
+        #endregion
     }
+
 }
