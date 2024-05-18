@@ -7,12 +7,15 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEditor.Rendering;
 using UnityEngine;
+using Random = System.Random;
 
 namespace HttpProject_GroupWork
 {
     public class Server
     {
         public int port;
+        private string verificationCode;
+        private string userName;
         private string verbType;
         private string filePath;
         private string httpVersion;
@@ -25,6 +28,7 @@ namespace HttpProject_GroupWork
         public Server()
         {
             this.port = 3000;
+            verificationCode = "";
             verbType = "";
             filePath = "";
             httpVersion = "";
@@ -117,8 +121,28 @@ namespace HttpProject_GroupWork
             // GETTING INFORMATION FROM THE REQUEST
             int count = request.Length;
             int positionInRequest = 0;
+            
+            for (int i = 0; i < count; i++) //THE VERIFICATION
+            {
+                if (request[i] == ' ')
+                {
+                    positionInRequest = i + 1;
+                    break;
+                }
+                userName += request[i];
+            }
+            
+            for (int i = positionInRequest; i < count; i++) //THE UserName
+            {
+                if (request[i] == ' ')
+                {
+                    positionInRequest = i + 1;
+                    break;
+                }
+                verificationCode += request[i];
+            }
 
-            for (int i = 0; i < count; i++) //THE VERB
+            for (int i = positionInRequest; i < count; i++) //THE VERB
             {
                 if (request[i] == ' ')
                 {
@@ -190,6 +214,8 @@ namespace HttpProject_GroupWork
             //Get the content of the request (the Json data)
             requestContent = request.Substring(headersEndIndex + 4); // +4 to omit the \r\n\r\n
             
+            Debug.Log("User Name information: " + userName);
+            Debug.Log("Verification Code information: " + verificationCode);
             Debug.Log("Verb information: " + verbType);
             Debug.Log("File-Path information: " + filePath);
             Debug.Log("Http-Version information: " + httpVersion);
@@ -203,6 +229,8 @@ namespace HttpProject_GroupWork
 
         public void ResetVariables()
         {
+            userName = "";
+            verificationCode = "";
             verbType = "";
             filePath = "";
             httpVersion = "";
@@ -249,23 +277,80 @@ namespace HttpProject_GroupWork
 
             response = tmpResponse + "\r\n" + response;
         }
+
+        public bool Verification()
+        {
+            string usersDataFilePath = UrlManager.Instance.pathToSaveUsersData;
+            using (FileStream fs = new FileStream(usersDataFilePath, FileMode.Open))
+            {
+                using (StreamReader file = new StreamReader(fs))
+                {
+                    List<Users_Data> usersDatas = new List<Users_Data>();
+                    string jSonData;
+                    while (!file.EndOfStream)
+                    {
+                        jSonData = file.ReadLine();
+                        usersDatas.Add(JsonUtility.FromJson<Users_Data>(jSonData));
+                    }
+
+                    response = "";
+                    foreach (var usersData in usersDatas)
+                    {
+                        bool isContained = usersData.userName.IndexOf(userName, StringComparison.OrdinalIgnoreCase) > 0;
+                        bool verificationCorrect = usersData.verificationToken.IndexOf(verificationCode, StringComparison.OrdinalIgnoreCase) > 0;
+                        if (isContained && verificationCorrect)
+                        {
+                            return true;
+                        }
+                    }
+
+                    return false;
+                }
+            }
+        }
+        
+        public string GenerateCode(int p_CodeLength)
+        {
+            string result = ""; 
+ 
+            string pattern = "+-_#!?0123456789abcdefghijklmnñopqrstuvwxyzABCDEFGHIJKLMNÑOPQRSTUVWXYZ";
+            
+            Random myRndGenerator = new Random((int)DateTime.Now.Ticks);
+
+            for(int i=0; i < p_CodeLength; i++)
+            {
+                int mIndex = myRndGenerator.Next(pattern.Length);
+                result += pattern[mIndex];
+            }
+
+            return result;
+        }
         
         #region GET_VerbType
         public async Task GET_VerbAction()
         {
-            //If the request Content is empty, the client wants the data file completed. Otherwise, he wants to know some Videogame-Data
-            if (requestContent == "")
+            if (Verification())
             {
-                await GetDataInformationFile();
+                //If the request Content is empty, the client wants the data file completed. Otherwise, he wants to know some Videogame-Data
+                if (requestContent == "")
+                {
+                    await GetDataInformationFile();
+                }
+                else
+                {
+                    int indexOfName = requestContent.IndexOf(": ") + 2;
+
+                    string gameName = requestContent.Substring(indexOfName);
+                
+                    GetVideogameDataFromFile(gameName);
+                }
             }
             else
             {
-                int indexOfName = requestContent.IndexOf(": ") + 2;
-
-                string gameName = requestContent.Substring(indexOfName);
-                
-                GetVideogameDataFromFile(gameName);
+                response = "";
+                responseCode = "";
             }
+            
         }
 
         public async Task GetDataInformationFile()
@@ -328,25 +413,33 @@ namespace HttpProject_GroupWork
         
         public async Task POST_VerbAction()
         {
-            try
+            if (Verification())
             {
-                using (FileStream fs = new FileStream(filePath, FileMode.Append))
+                try
                 {
-                    using (StreamWriter file = new StreamWriter(fs))
+                    using (FileStream fs = new FileStream(filePath, FileMode.Append))
                     {
-                        // Write (append) in the file selected, if it isn't exists it creates a new file
-                        await file.WriteLineAsync(requestContent);
-                    }   
+                        using (StreamWriter file = new StreamWriter(fs))
+                        {
+                            // Write (append) in the file selected, if it isn't exists it creates a new file
+                            await file.WriteLineAsync(requestContent);
+                        }
+                    }
+
+                    responseCode = "201 Created";
+                    response = "File created successfully.";
                 }
-                
-                responseCode = "201 Created";
-                response = "File created successfully.";
+                catch
+                {
+                    responseCode = "406 Not Acceptable";
+                    response = "Error 406 Not Acceptable";
+                    Debug.Log("The file " + filePath + " has not be found");
+                }
             }
-            catch
+            else
             {
-                responseCode = "406 Not Acceptable";
-                response = "Error 406 Not Acceptable";
-                Debug.Log("The file " + filePath + " has not be found");
+                response = "";
+                responseCode = "";
             }
         }
 
@@ -356,82 +449,90 @@ namespace HttpProject_GroupWork
 
         public async Task PUT_VerbAction()
         {
-            try
+            if (Verification())
             {
-                VideoGames_Data gameDataFromFile;
-                VideoGames_Data inputGameData = JsonUtility.FromJson<VideoGames_Data>(requestContent);
-                List<string> jsonData = new List<string>();
-
-                bool fileIsEmpty = false;
-                bool isNewData = true;
-
-                if (!File.Exists(filePath))
+                try
                 {
-                    throw new Exception();
-                }
+                    VideoGames_Data gameDataFromFile;
+                    VideoGames_Data inputGameData = JsonUtility.FromJson<VideoGames_Data>(requestContent);
+                    List<string> jsonData = new List<string>();
 
-                using (FileStream fs = new FileStream(filePath, FileMode.Open))
-                {
-                    using (StreamReader sr = new StreamReader(fs))
+                    bool fileIsEmpty = false;
+                    bool isNewData = true;
+
+                    if (!File.Exists(filePath))
                     {
-                        if (sr.EndOfStream)
-                        {
-                            fileIsEmpty = true;
-                        }
-
-                        while (!sr.EndOfStream)
-                        {
-                            jsonData.Add(await sr.ReadLineAsync());
-                        }
+                        throw new Exception();
                     }
-                }
 
-                using (FileStream fs = new FileStream(filePath, FileMode.Truncate))
-                {
-                    using (StreamWriter sw = new StreamWriter(fs))
+                    using (FileStream fs = new FileStream(filePath, FileMode.Open))
                     {
-                        if (fileIsEmpty)
+                        using (StreamReader sr = new StreamReader(fs))
                         {
-                            await sw.WriteLineAsync(requestContent);
-
-                            responseCode = "201 Created";
-                            response = "File created successfully.";
-                            return;
-                        }
-
-                        int count = jsonData.Count;
-                        for (int i = 0; i < count; i++)
-                        {
-                            gameDataFromFile = JsonUtility.FromJson<VideoGames_Data>(jsonData[i]);
-
-                            if (gameDataFromFile.name == inputGameData.name)
+                            if (sr.EndOfStream)
                             {
-                                jsonData[i] = requestContent;
-                                isNewData = false;
-                                break;
+                                fileIsEmpty = true;
+                            }
+
+                            while (!sr.EndOfStream)
+                            {
+                                jsonData.Add(await sr.ReadLineAsync());
                             }
                         }
-                        
-                        if (isNewData)
-                        {
-                            jsonData.Add(requestContent);
-                        }
+                    }
 
-                        foreach (var data in jsonData)
+                    using (FileStream fs = new FileStream(filePath, FileMode.Truncate))
+                    {
+                        using (StreamWriter sw = new StreamWriter(fs))
                         {
-                            await sw.WriteLineAsync(data);
-                        }
+                            if (fileIsEmpty)
+                            {
+                                await sw.WriteLineAsync(requestContent);
 
-                        responseCode = "214 Transformation Applied";
-                        response = "Transformation Applied.";
+                                responseCode = "201 Created";
+                                response = "File created successfully.";
+                                return;
+                            }
+
+                            int count = jsonData.Count;
+                            for (int i = 0; i < count; i++)
+                            {
+                                gameDataFromFile = JsonUtility.FromJson<VideoGames_Data>(jsonData[i]);
+
+                                if (gameDataFromFile.name == inputGameData.name)
+                                {
+                                    jsonData[i] = requestContent;
+                                    isNewData = false;
+                                    break;
+                                }
+                            }
+                            
+                            if (isNewData)
+                            {
+                                jsonData.Add(requestContent);
+                            }
+
+                            foreach (var data in jsonData)
+                            {
+                                await sw.WriteLineAsync(data);
+                            }
+
+                            responseCode = "214 Transformation Applied";
+                            response = "Transformation Applied.";
+                        }
                     }
                 }
+                catch
+                {
+                    responseCode = "406 Not Acceptable";
+                    response = "Error 406 Not Acceptable";
+                    Debug.Log("The file " + filePath + " has not be found");
+                }
             }
-            catch
+            else
             {
-                responseCode = "406 Not Acceptable";
-                response = "Error 406 Not Acceptable";
-                Debug.Log("The file " + filePath + " has not be found");
+                response = "";
+                responseCode = "";
             }
         }
 
@@ -441,17 +542,25 @@ namespace HttpProject_GroupWork
 
         private void DELETE_VerbAction()
         {
-            if (File.Exists(filePath))
+            if (Verification())
             {
-                File.Delete(filePath);
-                
-                responseCode = "204 No Content";
-                response = "No Content";
+                if (File.Exists(filePath))
+                {
+                    File.Delete(filePath);
+
+                    responseCode = "204 No Content";
+                    response = "No Content";
+                }
+                else
+                {
+                    responseCode = "404 Not Found";
+                    response = "Error 404 Not Found";
+                }
             }
             else
             {
-                responseCode = "404 Not Found";
-                response = "Error 404 Not Found";
+                response = "";
+                responseCode = "";
             }
         }
 
@@ -461,16 +570,23 @@ namespace HttpProject_GroupWork
 
         private void HEAD_VerbAction()
         {
-            if (File.Exists(filePath))
+            if (Verification())
             {
+                if (File.Exists(filePath))
+                {
 
-                responseCode = "200 OK";
-                response = "OK";
-            }
-            else
+                    responseCode = "200 OK";
+                    response = "OK";
+                }
+                else
+                {
+                    responseCode = "404 Not Found";
+                    response = "Error 404 Not Found";
+                }
+            }else
             {
-                responseCode = "404 Not Found";
-                response = "Error 404 Not Found";
+                response = "";
+                responseCode = "";
             }
         }
 

@@ -22,7 +22,7 @@ public class VerbButtons : MonoBehaviour
 
     public void ActivateVerb(int i)
     {
-        //deactivate all
+        //desactivate all
         foreach(GameObject go in verbInputs)
         {
             go.SetActive(false);
