@@ -29,6 +29,9 @@ namespace HttpProject_GroupWork
         private DateTime modifyDate;
         private DateTime getDate;
         private bool firstTime =  true;
+        public string console = null;
+        public string lastConsole = null;
+        public bool especificVideogame = true;
      
         public Server()
         {
@@ -272,11 +275,12 @@ namespace HttpProject_GroupWork
             if (requestContent == "")
             {
                 
-                if (comparingDate > getDate || firstTime)
+                if (comparingDate > getDate || firstTime || lastConsole != console)
                 {
                     await GetDataInformationFile();
-                    modifyDate = DateTime.Now;
+                    lastConsole = console;
                     firstTime = false;
+                    especificVideogame = true;
                 }
                 else
                 {
@@ -287,13 +291,14 @@ namespace HttpProject_GroupWork
             }
             else
             {
-                if (comparingDate > getDate || firstTime) { 
+                especificVideogame = false;
+                if (comparingDate > getDate || firstTime || lastConsole != console || !especificVideogame) { 
                     int indexOfName = requestContent.IndexOf(": ") + 2;
 
                     string gameName = requestContent.Substring(indexOfName);
                 
                     GetVideogameDataFromFile(gameName);
-                    modifyDate =  DateTime.Now;
+                    lastConsole = console;
                     firstTime = false;
                 }
                 else
@@ -521,7 +526,7 @@ namespace HttpProject_GroupWork
         #region GetDateFromPath
         private DateTime GetDateFromPath()
         {
-            string console = null;
+            console = null;
             for (int i = filePath.Length - 1; i >= 0; i--)
             {
                 if (filePath[i] != '/')
