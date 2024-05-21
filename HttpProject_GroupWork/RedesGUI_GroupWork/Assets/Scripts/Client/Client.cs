@@ -64,6 +64,7 @@ public class Client
 
     public void ResetVariables()
     {
+        login = "";
         request = "";
         verbType = "";
         body = "";

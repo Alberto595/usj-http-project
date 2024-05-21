@@ -305,16 +305,6 @@ namespace HttpProject_GroupWork
         {
             if (login != "1")
             {
-                if (comparingDate > getDate || firstTime)
-                {
-                    await GetDataInformationFile();
-                    modifyDate = DateTime.Now;
-                    firstTime = false;
-                }
-                else
-                {
-                    responseCode = "304 Not modified";
-                }
                 string usersDataFilePath = UrlManager.Instance.pathToSaveUsersData;
 
                 using (FileStream fs = new FileStream(usersDataFilePath, FileMode.Open))
@@ -375,14 +365,18 @@ namespace HttpProject_GroupWork
                 else
                 {
                     if (comparingDate > getDate || firstTime) {
-                        int indexOfName = requestContent.IndexOf(": ") + 2;
+                        int indexOfName = requestContent.IndexOf(":") + 2;
                         string gameName = requestContent.Substring(indexOfName);
                         
                         if (login == "1")
                         {
-                            indexOfName = gameName.IndexOf(",");
-                            string userNameToSearch = requestContent.Substring(indexOfName);
-                            GetUsersDataFromFile(userNameToSearch);
+                            indexOfName = gameName.IndexOf(",") - 1;
+                            string userNameToSearch = gameName.Substring(0,indexOfName);
+                            indexOfName = gameName.IndexOf(":") + 2;
+                            string auxPasswordString = gameName.Substring(indexOfName);
+                            indexOfName = auxPasswordString.IndexOf(",") - 1;
+                            string passwordString = auxPasswordString.Substring(0,indexOfName);
+                            GetUsersDataFromFile(userNameToSearch, passwordString);
                         }
                         else
                         {
@@ -453,7 +447,7 @@ namespace HttpProject_GroupWork
                 }
             }
         }
-        public async void GetUsersDataFromFile(string userName)
+        public async void GetUsersDataFromFile(string userName, string password)
         {
             using (FileStream fs = new FileStream(filePath, FileMode.Open))
             {
@@ -472,7 +466,8 @@ namespace HttpProject_GroupWork
                     {
                         //bool isContained = videogameData.name.Contains(nameOfVideogame);
                         bool isContained = userData.userName.IndexOf(userName, StringComparison.OrdinalIgnoreCase) >= 0;
-                        if (isContained)
+                        bool goodPassword = userData.password.IndexOf(password, StringComparison.Ordinal) >= 0;
+                        if (isContained && goodPassword)
                         {
                             response += JsonUtility.ToJson(userData) + "\r\n";
                             responseCode = "200 OK";

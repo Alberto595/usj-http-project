@@ -26,7 +26,7 @@ public class LogInAction : MonoBehaviour
     protected Dictionary<string, string> headersToSend;
 
     [SerializeField]
-    protected Client_Mono client;
+    public Client_Mono client;
 
     protected string verb1 = "PUT";
     protected string verb2 = "GET";
@@ -49,7 +49,6 @@ public class LogInAction : MonoBehaviour
             client.client.userName = userName;
             client.client.verificationCode = connectionToken;
         }
-        client.client.login = "";
     }
     public void RequestSigIn()
     {
@@ -59,7 +58,6 @@ public class LogInAction : MonoBehaviour
             client.client.userName = bodyFields[0].text;
             client.client.verificationCode = connectionToken;
         }
-        client.client.login = "";
     }
     public bool SendVerbRequest(string verb)
     {
