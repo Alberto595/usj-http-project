@@ -4,11 +4,16 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using JetBrains.Annotations;
 using TMPro;
 using UnityEngine;
 
 public class Client
 {
+    //Verification Variables
+    public string verificationCode = "";
+
+    public string userName;
     //Connection variables
     public string server;
 
@@ -42,7 +47,7 @@ public class Client
                        + "Connection: close";
     }
 
-    public Client(string server, int port, string verbType, string body, string filePath)
+    public Client(string server, int port, string verbType, string body, string filePath, string userName = "")
     {
         this.server = server;
         this.port = port;
@@ -50,6 +55,7 @@ public class Client
         this.verbType = verbType;
         this.body = body;
         this.filePath = filePath;
+        this.userName = userName;
     }
 
     public void ResetVariables()
@@ -58,6 +64,8 @@ public class Client
         verbType = "";
         body = "";
         filePath = "/";
+        verificationCode = "";
+        userName = "";
     }
 
     public async Task Request(string verbType, string filepath, string url, Dictionary<string, string> headers,
@@ -183,6 +191,8 @@ public class Client
        
         
         Debug.Log("this is the request: " + request);
+        
+        //request = userName + " " + verificationCode + " " + verbType + " " + filePath + " " + request + "\r\n" + body;
     }
     
     /// <summary>

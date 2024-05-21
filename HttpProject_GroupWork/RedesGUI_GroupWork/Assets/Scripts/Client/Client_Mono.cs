@@ -7,7 +7,7 @@ using UnityEngine;
 
 public class Client_Mono : MonoBehaviour
 {
-    public VideoGames_Data videoGamesData = new VideoGames_Data("Call of Duty", "2024", "Alberto&TuMadre");
+    public VideoGames_Data videoGamesData = new VideoGames_Data("Call of Duty", "2024", "Alberto");
     public ClientServerMessages UImessages;
 
     private Client client;
