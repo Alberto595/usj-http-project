@@ -41,7 +41,7 @@ public class GamePanel : MonoBehaviour
         
         foreach (GameObject child in children)
         {
-            Destroy(child);
+            DestroyImmediate(child);
         }
         
         foreach (VideoGames_Data d in games)

@@ -41,6 +41,7 @@ public class Client
     public string dateHTTP = null;
     public Client(string verb = "GET", string server = "localhost")
     {
+        userName = "NONE";
         login = "";
         this.server = server;
         this.port = 3000;
@@ -50,7 +51,7 @@ public class Client
                        + "Connection: close";
     }
 
-    public Client(string server, int port, string verbType, string body, string filePath, string userName = "")
+    public Client(string server, int port, string verbType, string body, string filePath)
     {
         login = "";
         this.server = server;
@@ -59,7 +60,7 @@ public class Client
         this.verbType = verbType;
         this.body = body;
         this.filePath = filePath;
-        this.userName = userName;
+        userName = "NONE";
     }
 
     public void ResetVariables()
@@ -69,8 +70,6 @@ public class Client
         verbType = "";
         body = "";
         filePath = "/";
-        verificationCode = "";
-        userName = "";
     }
 
     public async Task Request(string verbType, string filepath, string url, Dictionary<string, string> headers,

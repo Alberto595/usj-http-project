@@ -31,7 +31,7 @@ public class LogInAction : MonoBehaviour
     public Client_Mono client;
 
     protected string verb1 = "PUT";
-    protected string verb2 = "PUT";
+    protected string verb2 = "POST";
     protected string connectionToken;
     protected string userName = "";
 
@@ -44,25 +44,29 @@ public class LogInAction : MonoBehaviour
 
     public void RequestLogIn()
     {
-        client.client.login = "1";
-       
-        if (SendVerbRequest(verb1))
+        if (bodyFields[0].text != "")
         {
-            client.client.userName = userName;
-            client.client.verificationCode = connectionToken;
+            client.client.login = "1";
+
+            if (SendVerbRequest(verb1))
+            {
+                client.client.userName = userName;
+                client.client.verificationCode = connectionToken;
+            }
+            else
+            {
+                client.client.userName = "None";
+                client.client.verificationCode = "0";
+            }
+            verbsCanva.SetActive(true);
+            sentBanner.SetActive(false);
         }
-        else
-        {
-            client.client.userName = "None";
-            client.client.verificationCode = "0";
-        }
-        verbsCanva.SetActive(true);
-        sentBanner.SetActive(false);
+        
     }
     public void RequestSigIn()
     {
         client.client.login = "1";
-        if (SendVerbRequest(verb2))
+        if (SendVerbRequest(verb2) && bodyFields[0].text != "")
         {
             RequestLogIn();
         }
