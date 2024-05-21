@@ -6,6 +6,19 @@ public class Users_Data
     public string password;
     public string verificationToken;
     
+    public Users_Data()
+    {
+        this.userName = "";
+        this.password = "";
+        this.verificationToken = "";
+    }
+
+    public Users_Data(string userName, string password, string verificationToken)
+    {
+        this.userName = userName;
+        this.password = password;
+        this.verificationToken = verificationToken;
+    }
     protected bool Equals(Users_Data other)
     {
         return userName == other.userName && password == other.password && verificationToken == other.verificationToken;
@@ -16,7 +29,7 @@ public class Users_Data
         if (ReferenceEquals(null, obj)) return false;
         if (ReferenceEquals(this, obj)) return true;
         if (obj.GetType() != this.GetType()) return false;
-        return Equals((VideoGames_Data)obj);
+        return Equals((Users_Data)obj);
     }
 
     public override int GetHashCode()

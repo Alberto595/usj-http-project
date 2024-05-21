@@ -10,7 +10,7 @@ public class Client_Mono : MonoBehaviour
     public VideoGames_Data videoGamesData = new VideoGames_Data("Call of Duty", "2024", "Alberto");
     public ClientServerMessages UImessages;
 
-    private Client client;
+    public Client client;
     
     // Start is called before the first frame update
     void Start()
@@ -50,6 +50,30 @@ public class Client_Mono : MonoBehaviour
 
 
         client.Request(verb, UrlManager.Instance.pathToSaveVideogameData, "localhost", headers, body, gamedata);
+
+        
+    }
+    public void AcceptRequestFromButton(string verb, Dictionary<string, string> newHeaders, string body, Users_Data usersData)
+    {
+
+        Dictionary<string, string> headers = new Dictionary<string, string>();
+        headers.Add("Content-type", "text/plain");
+
+        try
+        {
+            foreach (KeyValuePair<string, string> h in newHeaders)
+            {
+                headers.Add(h.Key, h.Value);
+            }
+        }
+        catch (System.Exception)
+        {
+
+            
+        }
+
+
+        client.Request(verb, UrlManager.Instance.pathToSaveUsersData, "localhost", headers, body, usersData);
 
         
     }

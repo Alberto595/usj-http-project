@@ -38,7 +38,6 @@ public class VideoGames_Data
     {
         return HashCode.Combine(name, releaseYear, developer);
     }
-
     public bool IsEmpty()
     {
         return name == "" && releaseYear == "" && developer == "";

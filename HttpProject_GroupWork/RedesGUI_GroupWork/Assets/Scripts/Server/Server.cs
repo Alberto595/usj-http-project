@@ -15,6 +15,7 @@ namespace HttpProject_GroupWork
     public class Server
     {
         public int port;
+        private string login;
         private string verificationCode;
         private string userName;
         private string verbType;
@@ -35,6 +36,7 @@ namespace HttpProject_GroupWork
         public Server()
         {
             this.port = 3000;
+            login = "";
             verificationCode = "";
             verbType = "";
             filePath = "";
@@ -137,6 +139,15 @@ namespace HttpProject_GroupWork
                     break;
                 }
                 userName += request[i];
+            }
+            for (int i = positionInRequest; i < count; i++) //THE UserName
+            {
+                if (request[i] == ' ')
+                {
+                    positionInRequest = i + 1;
+                    break;
+                }
+                login += request[i];
             }
             
             for (int i = positionInRequest; i < count; i++) //THE UserName
@@ -291,52 +302,45 @@ namespace HttpProject_GroupWork
 
         public bool Verification()
         {
-            string usersDataFilePath = UrlManager.Instance.pathToSaveUsersData;
-            using (FileStream fs = new FileStream(usersDataFilePath, FileMode.Open))
+            if (login != "1")
             {
-                using (StreamReader file = new StreamReader(fs))
+                string usersDataFilePath = UrlManager.Instance.pathToSaveUsersData;
+
+                using (FileStream fs = new FileStream(usersDataFilePath, FileMode.Open))
                 {
-                    List<Users_Data> usersDatas = new List<Users_Data>();
-                    string jSonData;
-                    while (!file.EndOfStream)
+                    using (StreamReader file = new StreamReader(fs))
                     {
-                        jSonData = file.ReadLine();
-                        usersDatas.Add(JsonUtility.FromJson<Users_Data>(jSonData));
-                    }
-
-                    response = "";
-                    foreach (var usersData in usersDatas)
-                    {
-                        bool isContained = usersData.userName.IndexOf(userName, StringComparison.OrdinalIgnoreCase) > 0;
-                        bool verificationCorrect = usersData.verificationToken.IndexOf(verificationCode, StringComparison.OrdinalIgnoreCase) > 0;
-                        if (isContained && verificationCorrect)
+                        List<Users_Data> usersDatas = new List<Users_Data>();
+                        string jSonData;
+                        while (!file.EndOfStream)
                         {
-                            return true;
+                            jSonData = file.ReadLine();
+                            usersDatas.Add(JsonUtility.FromJson<Users_Data>(jSonData));
                         }
-                    }
 
-                    return false;
+                        response = "";
+                        foreach (var usersData in usersDatas)
+                        {
+                            bool isContained =
+                                usersData.userName.IndexOf(userName, StringComparison.OrdinalIgnoreCase) > 0;
+                            bool verificationCorrect =
+                                usersData.verificationToken.IndexOf(verificationCode,
+                                    StringComparison.OrdinalIgnoreCase) > 0;
+                            if (isContained && verificationCorrect)
+                            {
+                                return true;
+                            }
+                        }
+
+                        return false;
+                    }
                 }
             }
-        }
-        
-        public string GenerateCode(int p_CodeLength)
-        {
-            string result = ""; 
- 
-            string pattern = "+-_#!?0123456789abcdefghijklmnñopqrstuvwxyzABCDEFGHIJKLMNÑOPQRSTUVWXYZ";
-            
-            Random myRndGenerator = new Random((int)DateTime.Now.Ticks);
-
-            for(int i=0; i < p_CodeLength; i++)
+            else
             {
-                int mIndex = myRndGenerator.Next(pattern.Length);
-                result += pattern[mIndex];
+                return true;
             }
-
-            return result;
         }
-        
         #region GET_VerbType
         public async Task GET_VerbAction()
         {
@@ -361,10 +365,18 @@ namespace HttpProject_GroupWork
                 {
                     if (comparingDate > getDate || firstTime) {
                         int indexOfName = requestContent.IndexOf(": ") + 2;
-
                         string gameName = requestContent.Substring(indexOfName);
-                    
-                        GetVideogameDataFromFile(gameName);
+                        
+                        if (login == "1")
+                        {
+                            indexOfName = gameName.IndexOf(",");
+                            string userNameToSearch = requestContent.Substring(indexOfName);
+                            GetUsersDataFromFile(userNameToSearch);
+                        }
+                        else
+                        {
+                            GetVideogameDataFromFile(gameName);
+                        }
                         modifyDate =  DateTime.Now;
                         firstTime = false;
                     }
@@ -430,6 +442,40 @@ namespace HttpProject_GroupWork
                 }
             }
         }
+        public async void GetUsersDataFromFile(string userName)
+        {
+            using (FileStream fs = new FileStream(filePath, FileMode.Open))
+            {
+                using (StreamReader file = new StreamReader(fs))
+                {
+                    List<Users_Data> usersDatas = new List<Users_Data>();
+                    string jSonData;
+                    while (!file.EndOfStream)
+                    {
+                        jSonData = await file.ReadLineAsync();
+                        usersDatas.Add(JsonUtility.FromJson<Users_Data>(jSonData));
+                    }
+
+                    response = "";
+                    foreach (var userData in usersDatas)
+                    {
+                        //bool isContained = videogameData.name.Contains(nameOfVideogame);
+                        bool isContained = userData.userName.IndexOf(userName, StringComparison.OrdinalIgnoreCase) >= 0;
+                        if (isContained)
+                        {
+                            response += JsonUtility.ToJson(userData) + "\r\n";
+                            responseCode = "200 OK";
+                        }
+                    }
+
+                    if (response == "")
+                    {
+                        responseCode = "400 Bad Request";
+                        response = "Error 400 Bad Request";
+                    }
+                }
+            }
+        }
         
         #endregion
 
@@ -443,8 +489,12 @@ namespace HttpProject_GroupWork
                 {
                     using (FileStream fs = new FileStream(filePath, FileMode.Append))
                     {
-                        // Write (append) in the file selected, if it isn't exists it creates a new file
-                        await file.WriteLineAsync(requestContent);
+                        using (StreamWriter sw = new StreamWriter(fs))
+                        {
+                            // Write (append) in the file selected, if it isn't exists it creates a new file
+                            await sw.WriteLineAsync(requestContent);
+                        }
+
                         //Updates the date of the file depending of the console
                         UpdateDate();
                     }
@@ -508,7 +558,7 @@ namespace HttpProject_GroupWork
                     {
                         using (StreamWriter sw = new StreamWriter(fs))
                         {
-                            await sw.WriteLineAsync(data);
+                            //await sw.WriteLineAsync(data);
                         }
                         //Updates the date of the file depending of the console
                         UpdateDate();
@@ -517,7 +567,7 @@ namespace HttpProject_GroupWork
                         
                         if (fileIsEmpty)
                         {
-                            await sw.WriteLineAsync(requestContent);
+                            //await sw.WriteLineAsync(requestContent);
 
                             responseCode = "201 Created";
                             response = "File created successfully.";
@@ -544,7 +594,7 @@ namespace HttpProject_GroupWork
 
                         foreach (var data in jsonData)
                         {
-                            await sw.WriteLineAsync(data);
+                            //await sw.WriteLineAsync(data);
                         }
 
                         responseCode = "214 Transformation Applied";
@@ -621,6 +671,12 @@ namespace HttpProject_GroupWork
                 responseCode = "";
             }
         }
+
+        #endregion
+
+        #region Login_SigIn
+
+        
 
         #endregion
 
