@@ -343,54 +343,43 @@ namespace HttpProject_GroupWork
             }
         }
         #region GET_VerbType
-        public async Task GET_VerbAction()
+       public async Task GET_VerbAction()
         {
-            if (Verification())
+            // takes the date depending of the console
+            DateTime comparingDate = GetDateFromPath();
+            
+            //If the request Content is empty, the client wants the data file completed. Otherwise, he wants to know some Videogame-Data
+            if (requestContent == "")
             {
-                // takes the date depending of the console
-                DateTime comparingDate = GetDateFromPath();
                 
-                //If the request Content is empty, the client wants the data file completed. Otherwise, he wants to know some Videogame-Data
-                if (requestContent == "")
+                if (comparingDate > getDate || firstTime)
                 {
-                    
-                    if (comparingDate > getDate || firstTime)
-                    {
-                        await GetDataInformationFile();
-                        modifyDate = DateTime.Now;
-                        firstTime = false;
-                    }
-                    
+                    await GetDataInformationFile();
+                    modifyDate = DateTime.Now;
+                    firstTime = false;
                 }
                 else
                 {
-                    if (comparingDate > getDate || firstTime) {
-                        int indexOfName = requestContent.IndexOf(":") + 2;
-                        string gameName = requestContent.Substring(indexOfName);
-                        
-                        if (login == "1")
-                        {
-                            indexOfName = gameName.IndexOf(",") - 1;
-                            string userNameToSearch = gameName.Substring(0,indexOfName);
-                            indexOfName = gameName.IndexOf(":") + 2;
-                            string auxPasswordString = gameName.Substring(indexOfName);
-                            indexOfName = auxPasswordString.IndexOf(",") - 1;
-                            string passwordString = auxPasswordString.Substring(0,indexOfName);
-                            GetUsersDataFromFile(userNameToSearch, passwordString);
-                        }
-                        else
-                        {
-                            GetVideogameDataFromFile(gameName);
-                        }
-                        modifyDate =  DateTime.Now;
-                        firstTime = false;
-                    }
+                    responseCode = "304 Not modified";
                 }
+
+                
             }
             else
             {
-                response = "Not verification Token";
-                responseCode = "";
+                if (comparingDate > getDate || firstTime) { 
+                    int indexOfName = requestContent.IndexOf(": ") + 2;
+
+                    string gameName = requestContent.Substring(indexOfName);
+                
+                    GetVideogameDataFromFile(gameName);
+                    modifyDate =  DateTime.Now;
+                    firstTime = false;
+                }
+                else
+                {
+                    responseCode = "304 Not modified";
+                }
             }
         }
 
@@ -447,43 +436,6 @@ namespace HttpProject_GroupWork
                 }
             }
         }
-        public async void GetUsersDataFromFile(string userName, string password)
-        {
-            using (FileStream fs = new FileStream(filePath, FileMode.Open))
-            {
-                using (StreamReader file = new StreamReader(fs))
-                {
-                    List<Users_Data> usersDatas = new List<Users_Data>();
-                    string jSonData;
-                    while (!file.EndOfStream)
-                    {
-                        jSonData = await file.ReadLineAsync();
-                        usersDatas.Add(JsonUtility.FromJson<Users_Data>(jSonData));
-                    }
-
-                    response = "";
-                    foreach (var userData in usersDatas)
-                    {
-                        //bool isContained = videogameData.name.Contains(nameOfVideogame);
-                        bool isContained = userData.userName.IndexOf(userName, StringComparison.OrdinalIgnoreCase) >= 0;
-                        bool goodPassword = userData.password.IndexOf(password, StringComparison.Ordinal) >= 0;
-                        if (isContained && goodPassword)
-                        {
-                            response += JsonUtility.ToJson(userData) + "\r\n";
-                            responseCode = "200 OK";
-                            
-                        }
-                    }
-
-                    if (response == "")
-                    {
-                        responseCode = "400 Bad Request";
-                        response = "Error 400 Bad Request";
-                    }
-                }
-            }
-        }
-        
         #endregion
 
         #region POST_VerbType
