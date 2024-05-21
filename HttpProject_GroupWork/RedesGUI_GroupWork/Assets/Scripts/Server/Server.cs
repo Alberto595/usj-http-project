@@ -389,7 +389,7 @@ namespace HttpProject_GroupWork
             }
             else
             {
-                response = "";
+                response = "Not verification Token";
                 responseCode = "";
             }
         }
@@ -471,6 +471,7 @@ namespace HttpProject_GroupWork
                         {
                             response += JsonUtility.ToJson(userData) + "\r\n";
                             responseCode = "200 OK";
+                            
                         }
                     }
 
@@ -517,7 +518,7 @@ namespace HttpProject_GroupWork
             }
             else
             {
-                response = "";
+                response = "Not verification Token";
                 responseCode = "";
             }
         }
@@ -532,8 +533,19 @@ namespace HttpProject_GroupWork
             {
                 try
                 {
-                    VideoGames_Data gameDataFromFile;
-                    VideoGames_Data inputGameData = JsonUtility.FromJson<VideoGames_Data>(requestContent);
+                    Users_Data userDataFromFile = new Users_Data();
+                    Users_Data inputUserData = new Users_Data();
+                    VideoGames_Data gameDataFromFile = new VideoGames_Data();
+                    VideoGames_Data inputGameData = new VideoGames_Data();
+                    if (login == "1")
+                    {
+                       inputUserData = JsonUtility.FromJson<Users_Data>(requestContent);
+                    }
+                    else
+                    { 
+                        inputGameData = JsonUtility.FromJson<VideoGames_Data>(requestContent);
+                    }
+                    
                     List<string> jsonData = new List<string>();
 
                     bool fileIsEmpty = false;
@@ -562,10 +574,6 @@ namespace HttpProject_GroupWork
 
                     using (FileStream fs = new FileStream(filePath, FileMode.Truncate))
                     {
-                        using (StreamWriter sw = new StreamWriter(fs))
-                        {
-                            //await sw.WriteLineAsync(data);
-                        }
                         //Updates the date of the file depending of the console
                         UpdateDate();
                         responseCode = "214 Transformation Applied";
@@ -573,7 +581,10 @@ namespace HttpProject_GroupWork
                         
                         if (fileIsEmpty)
                         {
-                            //await sw.WriteLineAsync(requestContent);
+                            using (StreamWriter sw = new StreamWriter(fs))
+                            {
+                                await sw.WriteLineAsync(requestContent);
+                            }
 
                             responseCode = "201 Created";
                             response = "File created successfully.";
@@ -581,26 +592,59 @@ namespace HttpProject_GroupWork
                         }
 
                         int count = jsonData.Count;
+                        int changes = 0;
                         for (int i = 0; i < count; i++)
                         {
-                            gameDataFromFile = JsonUtility.FromJson<VideoGames_Data>(jsonData[i]);
-
-                            if (gameDataFromFile.name == inputGameData.name)
+                            if (login == "1")
                             {
-                                jsonData[i] = requestContent;
-                                isNewData = false;
-                                break;
+                                userDataFromFile = JsonUtility.FromJson<Users_Data>(jsonData[i]);
+                                if (userDataFromFile.userName == inputUserData.userName && userDataFromFile.password == inputUserData.password)
+                                {
+                                    jsonData[i] = requestContent;
+                                    isNewData = false;
+                                    changes++;
+                                    break;
+                                }
+                                
+                            }
+                            else
+                            {
+                                gameDataFromFile = JsonUtility.FromJson<VideoGames_Data>(jsonData[i]);
+                                if (gameDataFromFile.name == inputGameData.name)
+                                {
+                                    jsonData[i] = requestContent;
+                                    isNewData = false;
+                                    break;
+                                }
+                            }
+
+                            if (changes > 0)
+                            {
+                                responseCode = "406 Not Acceptable";
+                                response = "Error 406 Not Acceptable";
+                                Debug.Log("The file " + filePath + " has not be found");
+                                using (StreamWriter sw = new StreamWriter(fs))
+                                {
+                                    foreach (var data in jsonData)
+                                    {
+                                        await sw.WriteLineAsync(data);
+                                    }
+                                }
+                                return;
                             }
                         }
                         
-                        if (isNewData)
+                        if (isNewData && login != "1")
                         {
                             jsonData.Add(requestContent);
                         }
 
-                        foreach (var data in jsonData)
+                        using (StreamWriter sw = new StreamWriter(fs))
                         {
-                            //await sw.WriteLineAsync(data);
+                            foreach (var data in jsonData)
+                            {
+                                await sw.WriteLineAsync(data);
+                            }
                         }
 
                         responseCode = "214 Transformation Applied";
@@ -616,7 +660,7 @@ namespace HttpProject_GroupWork
             }
             else
             {
-                response = "";
+                response = "Not verification Token";
                 responseCode = "";
             }
         }
@@ -644,7 +688,7 @@ namespace HttpProject_GroupWork
             }
             else
             {
-                response = "";
+                response = "Not verification Token";
                 responseCode = "";
             }
             ps5LastDate = DateTime.Now;
@@ -673,19 +717,12 @@ namespace HttpProject_GroupWork
                 }
             }else
             {
-                response = "";
+                response = "Not verification Token";
                 responseCode = "";
             }
         }
 
         #endregion
-
-        #region Login_SigIn
-
-        
-
-        #endregion
-
         #region GetDateFromPath
         private DateTime GetDateFromPath()
         {

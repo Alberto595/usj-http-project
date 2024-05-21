@@ -9,6 +9,8 @@ public class LogInAction : MonoBehaviour
 {
     [SerializeField]
     protected GameObject sentBanner;
+    [SerializeField]
+    protected GameObject verbsCanva;
 
     [SerializeField]
     protected TMP_InputField[] bodyFields;
@@ -29,8 +31,7 @@ public class LogInAction : MonoBehaviour
     public Client_Mono client;
 
     protected string verb1 = "PUT";
-    protected string verb2 = "GET";
-    protected string verb3 = "POST";
+    protected string verb2 = "PUT";
     protected string connectionToken;
     protected string userName = "";
 
@@ -44,19 +45,26 @@ public class LogInAction : MonoBehaviour
     public void RequestLogIn()
     {
         client.client.login = "1";
-        if (SendVerbRequest(verb2))
+       
+        if (SendVerbRequest(verb1))
         {
             client.client.userName = userName;
             client.client.verificationCode = connectionToken;
         }
+        else
+        {
+            client.client.userName = "None";
+            client.client.verificationCode = "0";
+        }
+        verbsCanva.SetActive(true);
+        sentBanner.SetActive(false);
     }
     public void RequestSigIn()
     {
         client.client.login = "1";
-        if (SendVerbRequest(verb3))
+        if (SendVerbRequest(verb2))
         {
-            client.client.userName = bodyFields[0].text;
-            client.client.verificationCode = connectionToken;
+            RequestLogIn();
         }
     }
     public bool SendVerbRequest(string verb)
@@ -116,6 +124,12 @@ public class LogInAction : MonoBehaviour
         }
 
         return result;
+    }
+
+    public void EnterToLogInUI()
+    {
+        sentBanner.SetActive(true);
+        verbsCanva.SetActive(false);
     }
 
 

@@ -50,26 +50,5 @@ public class GamePanel : MonoBehaviour
             newgame.GetComponent<gameInfo>().UpdateGameInfo(d.name, d.developer, d.releaseYear);
         }
     }
-    public void UpdateGamePanel(List<Users_Data> users)
-    {
-        //check if there are children and DESTROY THEM >:)
-        List<GameObject> children = new List<GameObject>();
-
-        foreach (Transform child in panelContent.transform)
-        {
-            children.Add(child.gameObject);
-        }
-        
-        foreach (GameObject child in children)
-        {
-            Destroy(child);
-        }
-        
-        foreach (Users_Data d in users)
-        {
-            GameObject newUser = GameObject.Instantiate(gamePrefab, panelContent.transform);
-            newUser.GetComponent<gameInfo>().UpdateGameInfo(d.userName, d.password, d.verificationToken);
-        }
-    }
     
 }

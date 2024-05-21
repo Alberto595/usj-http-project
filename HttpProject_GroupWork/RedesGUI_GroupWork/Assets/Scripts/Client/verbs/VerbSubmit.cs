@@ -31,6 +31,7 @@ public abstract class VerbSubmit : MonoBehaviour
     public abstract VideoGames_Data CreateGameInfo();
     public void SendVerbRequest()
     {
+        client.client.login = "";
         foreach (TMP_InputField b in bodyFields)
         {
             bodyToSend += b.text;

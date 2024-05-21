@@ -180,7 +180,7 @@ public class Client
         var messageBytesSegment = new ArraySegment<byte>(messageBytes);
         _ = await client.SendAsync(messageBytesSegment, SocketFlags.None);
         Debug.Log($"Socket client sent message: \n\"{request}\"");
-
+        
         //send the message to the text field in the UI
         UImessages.ChangeClientText(request);
 
@@ -206,10 +206,6 @@ public class Client
             string message = fullMessage.ToString();
 
             Debug.Log("The server sends the next information: \r\n" + message);
-
-            //update the game panel info
-            List<Users_Data> usersInfo = UnpackRequestClientInformationUser(message);
-            GamePanel.Instance.UpdateGamePanel(usersInfo);
 
             //update UI message for server
             UImessages.ChangeServerText(message);
