@@ -275,7 +275,7 @@ namespace HttpProject_GroupWork
             if (requestContent == "")
             {
                 
-                if (comparingDate > getDate || firstTime || lastConsole != console)
+                if (comparingDate > getDate || firstTime || lastConsole != console || especificVideogame)
                 {
                     await GetDataInformationFile();
                     lastConsole = console;
@@ -300,6 +300,7 @@ namespace HttpProject_GroupWork
                     GetVideogameDataFromFile(gameName);
                     lastConsole = console;
                     firstTime = false;
+                    especificVideogame = true;
                 }
                 else
                 {
