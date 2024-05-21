@@ -127,7 +127,15 @@ public class Client
 
             //update the game panel info
             List<VideoGames_Data> gamesInfo = UnpackRequestClientInformation(message);
-            GamePanel.Instance.UpdateGamePanel(gamesInfo);
+
+            if (message.Contains("304")) 
+            {
+                UImessages.ShowNotModified();
+            }
+            else
+            {
+                GamePanel.Instance.UpdateGamePanel(gamesInfo);
+            }
 
             //update UI message for server
             UImessages.ChangeServerText(message);

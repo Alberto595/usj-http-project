@@ -33,6 +33,7 @@ namespace HttpProject_GroupWork
         private DateTime modifyDate;
         private DateTime getDate;
         private bool firstTime =  true;
+     
         public Server()
         {
             this.port = 3000;
@@ -304,6 +305,16 @@ namespace HttpProject_GroupWork
         {
             if (login != "1")
             {
+                if (comparingDate > getDate || firstTime)
+                {
+                    await GetDataInformationFile();
+                    modifyDate = DateTime.Now;
+                    firstTime = false;
+                }
+                else
+                {
+                    responseCode = "304 Not modified";
+                }
                 string usersDataFilePath = UrlManager.Instance.pathToSaveUsersData;
 
                 using (FileStream fs = new FileStream(usersDataFilePath, FileMode.Open))
