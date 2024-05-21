@@ -17,6 +17,9 @@ public class ClientServerMessages : MonoBehaviour
     [SerializeField]
     TMP_Text server;
 
+    [SerializeField]
+    GameObject notmodified;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -48,4 +51,17 @@ public class ClientServerMessages : MonoBehaviour
     {
         serverMessage.SetActive(!serverMessage.activeSelf);
     }
+
+    public void ShowNotModified()
+    {
+        notmodified.SetActive(true);
+        StartCoroutine(HideNotModified());
+    }
+
+    private IEnumerator HideNotModified()
+    {
+        yield return new WaitForSeconds(2f);
+        notmodified.SetActive(false);
+    }
+
 }

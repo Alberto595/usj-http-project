@@ -29,6 +29,7 @@ namespace HttpProject_GroupWork
         private DateTime modifyDate;
         private DateTime getDate;
         private bool firstTime =  true;
+     
         public Server()
         {
             this.port = 3000;
@@ -279,7 +280,7 @@ namespace HttpProject_GroupWork
                 }
                 else
                 {
-
+                    responseCode = "304 Not modified";
                 }
 
                 
@@ -297,7 +298,7 @@ namespace HttpProject_GroupWork
                 }
                 else
                 {
-
+                    responseCode = "304 Not modified";
                 }
             }
         }
