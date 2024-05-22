@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using HttpProject_GroupWork;
 using UnityEditor.PackageManager;
+using TMPro;
 using UnityEngine;
 
 public class Client_Mono : MonoBehaviour
 {
     public VideoGames_Data videoGamesData = new VideoGames_Data("Call of Duty", "2024", "Alberto");
     public ClientServerMessages UImessages;
-
+    public TMP_Text userText;
     public Client client;
     
     // Start is called before the first frame update
@@ -25,7 +26,8 @@ public class Client_Mono : MonoBehaviour
         
         Dictionary<string, string> headers = new Dictionary<string, string>();
         headers.Add("Content-type", "text/plain");
-        
+        userText.text = client.userName;
+
         //client.Request("DELETE",UrlManager.Instance.pathToSaveVideogameData,"localhost", headers,"", videoGamesData);
     }
 

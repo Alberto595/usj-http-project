@@ -259,6 +259,7 @@ namespace HttpProject_GroupWork
             httpVersion = "";
             response = "";
             responseCode = "";
+            login = "";
             headersFromRequest = new Dictionary<string, string>();
             headersFromResponse = new Dictionary<string, string>();
         }
@@ -322,11 +323,8 @@ namespace HttpProject_GroupWork
                         response = "";
                         foreach (var usersData in usersDatas)
                         {
-                            bool isContained =
-                                usersData.userName.IndexOf(userName, StringComparison.OrdinalIgnoreCase) > 0;
-                            bool verificationCorrect =
-                                usersData.verificationToken.IndexOf(verificationCode,
-                                    StringComparison.OrdinalIgnoreCase) > 0;
+                            bool isContained = usersData.userName == userName;
+                            bool verificationCorrect = usersData.verificationToken == verificationCode;
                             if (isContained && verificationCorrect)
                             {
                                 return true;
@@ -345,41 +343,48 @@ namespace HttpProject_GroupWork
         #region GET_VerbType
        public async Task GET_VerbAction()
         {
-            // takes the date depending of the console
-            DateTime comparingDate = GetDateFromPath();
+            if (Verification())
+            {
+                // takes the date depending of the console
+                DateTime comparingDate = GetDateFromPath();
             
-            //If the request Content is empty, the client wants the data file completed. Otherwise, he wants to know some Videogame-Data
-            if (requestContent == "")
-            {
-                
-                if (comparingDate > getDate || firstTime)
+                //If the request Content is empty, the client wants the data file completed. Otherwise, he wants to know some Videogame-Data
+                if (requestContent == "")
                 {
-                    await GetDataInformationFile();
-                    modifyDate = DateTime.Now;
-                    firstTime = false;
+                
+                    if (comparingDate > getDate || firstTime)
+                    {
+                        await GetDataInformationFile();
+                        modifyDate = DateTime.Now;
+                        firstTime = false;
+                    }
+                    else
+                    {
+                        responseCode = "304 Not modified";
+                    }
+
+                
                 }
                 else
                 {
-                    responseCode = "304 Not modified";
-                }
+                    if (comparingDate > getDate || firstTime) { 
+                        int indexOfName = requestContent.IndexOf(": ") + 2;
 
+                        string gameName = requestContent.Substring(indexOfName);
                 
-            }
-            else
+                        GetVideogameDataFromFile(gameName);
+                        modifyDate =  DateTime.Now;
+                        firstTime = false;
+                    }
+                    else
+                    {
+                        responseCode = "304 Not modified";
+                    }
+                }
+            }else
             {
-                if (comparingDate > getDate || firstTime) { 
-                    int indexOfName = requestContent.IndexOf(": ") + 2;
-
-                    string gameName = requestContent.Substring(indexOfName);
-                
-                    GetVideogameDataFromFile(gameName);
-                    modifyDate =  DateTime.Now;
-                    firstTime = false;
-                }
-                else
-                {
-                    responseCode = "304 Not modified";
-                }
+                response = "Verificatio Error";
+                responseCode = "Error 6969 there was a verification error";
             }
         }
 
@@ -470,8 +475,8 @@ namespace HttpProject_GroupWork
             }
             else
             {
-                response = "Not verification Token";
-                responseCode = "";
+                response = "Verificatio Error";
+                responseCode = "Error 6969 there was a verification error";
             }
         }
 
@@ -612,8 +617,8 @@ namespace HttpProject_GroupWork
             }
             else
             {
-                response = "Not verification Token";
-                responseCode = "";
+                response = "Verificatio Error";
+                responseCode = "Error 6969 there was a verification error";
             }
         }
 
@@ -640,8 +645,8 @@ namespace HttpProject_GroupWork
             }
             else
             {
-                response = "Not verification Token";
-                responseCode = "";
+                response = "Verificatio Error";
+                responseCode = "Error 6969 there was a verification error";
             }
             ps5LastDate = DateTime.Now;
             xboxLastDate = DateTime.Now;
@@ -669,8 +674,8 @@ namespace HttpProject_GroupWork
                 }
             }else
             {
-                response = "Not verification Token";
-                responseCode = "";
+                response = "Verificatio Error";
+                responseCode = "Error 6969 there was a verification error";
             }
         }
 

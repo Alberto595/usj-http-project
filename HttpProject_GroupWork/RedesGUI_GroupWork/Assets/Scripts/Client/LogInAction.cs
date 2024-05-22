@@ -34,12 +34,17 @@ public class LogInAction : MonoBehaviour
     protected string verb2 = "POST";
     protected string connectionToken;
     protected string userName = "";
+    protected string password = "";
 
     public Users_Data CreateUserData()
     {
-        connectionToken = GenerateCode(4);
-        userName = bodyFields[0].text;
-        return new Users_Data(userName, bodyFields[1].text, connectionToken);
+        if (bodyFields[0].text != "")
+        {
+            connectionToken = GenerateCode(4);
+            userName = bodyFields[0].text;
+            password = bodyFields[1].text;
+        }
+        return new Users_Data(userName, password, connectionToken);
     }
 
     public void RequestLogIn()
@@ -60,6 +65,7 @@ public class LogInAction : MonoBehaviour
             }
             verbsCanva.SetActive(true);
             sentBanner.SetActive(false);
+            client.userText.text = client.client.userName;
         }
         
     }
@@ -134,6 +140,11 @@ public class LogInAction : MonoBehaviour
     {
         sentBanner.SetActive(true);
         verbsCanva.SetActive(false);
+    }
+    public void ExitLogInUI()
+    {
+        sentBanner.SetActive(false);
+        verbsCanva.SetActive(true);
     }
 
 
