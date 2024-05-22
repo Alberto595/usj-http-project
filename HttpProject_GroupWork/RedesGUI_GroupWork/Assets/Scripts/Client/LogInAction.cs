@@ -49,7 +49,7 @@ public class LogInAction : MonoBehaviour
 
     public void RequestLogIn()
     {
-        if (bodyFields[0].text != "")
+        if (bodyFields[0].text != "" && bodyFields[1].text != "")
         {
             client.client.login = "1";
 
@@ -72,7 +72,7 @@ public class LogInAction : MonoBehaviour
     public void RequestSigIn()
     {
         client.client.login = "1";
-        if (SendVerbRequest(verb2) && bodyFields[0].text != "")
+        if (SendVerbRequest(verb2) && userName != "")
         {
             RequestLogIn();
         }

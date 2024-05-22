@@ -334,6 +334,8 @@ namespace HttpProject_GroupWork
                             }
                         }
 
+                        response = "Verification Error";
+                        responseCode = "Error 401 No authenticated";
                         return false;
                     }
                 }
@@ -344,17 +346,18 @@ namespace HttpProject_GroupWork
             }
         }
         #region GET_VerbType
-       public async Task GET_VerbAction()
+
+        public async Task GET_VerbAction()
         {
             if (Verification())
             {
                 // takes the date depending of the console
                 DateTime comparingDate = GetDateFromPath();
-            
+
                 //If the request Content is empty, the client wants the data file completed. Otherwise, he wants to know some Videogame-Data
                 if (requestContent == "")
                 {
-                
+
                     if (comparingDate > getDate || firstTime || lastConsole != console || especificVideogame)
                     {
                         await GetDataInformationFile();
@@ -370,21 +373,19 @@ namespace HttpProject_GroupWork
                 else
                 {
                     especificVideogame = false;
-                if (comparingDate > getDate || firstTime || lastConsole != console || !especificVideogame) { 
-                    int indexOfName = requestContent.IndexOf(": ") + 2;
+                    if (comparingDate > getDate || firstTime || lastConsole != console || !especificVideogame)
+                    {
+                        int indexOfName = requestContent.IndexOf(": ") + 2;
 
-                    string gameName = requestContent.Substring(indexOfName);
-                
-                    GetVideogameDataFromFile(gameName);
-                    lastConsole = console;
-                    firstTime = false;
-                    especificVideogame = true;
+                        string gameName = requestContent.Substring(indexOfName);
+
+                        GetVideogameDataFromFile(gameName);
+                        lastConsole = console;
+                        firstTime = false;
+                        especificVideogame = true;
+                    }
                 }
-                else
-                {
-                    response = "Verificatio Error";
-                    responseCode = "Error 6969 there was a verification error";
-                }
+            }
         }
 
         public async Task GetDataInformationFile()
@@ -471,11 +472,6 @@ namespace HttpProject_GroupWork
                     response = "Error 406 Not Acceptable";
                     Debug.Log("The file " + filePath + " has not be found");
                 }
-            }
-            else
-            {
-                response = "Verificatio Error";
-                responseCode = "Error 6969 there was a verification error";
             }
         }
 
@@ -614,11 +610,6 @@ namespace HttpProject_GroupWork
                     Debug.Log("The file " + filePath + " has not be found");
                 }
             }
-            else
-            {
-                response = "Verificatio Error";
-                responseCode = "Error 6969 there was a verification error";
-            }
         }
 
         #endregion
@@ -641,11 +632,6 @@ namespace HttpProject_GroupWork
                     responseCode = "404 Not Found";
                     response = "Error 404 Not Found";
                 }
-            }
-            else
-            {
-                response = "Verificatio Error";
-                responseCode = "Error 6969 there was a verification error";
             }
             ps5LastDate = DateTime.Now;
             xboxLastDate = DateTime.Now;
