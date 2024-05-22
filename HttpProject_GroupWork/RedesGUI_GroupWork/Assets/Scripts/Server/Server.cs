@@ -305,6 +305,7 @@ namespace HttpProject_GroupWork
             response = tmpResponse + "\r\n" + response;
         }
 
+
         public bool Verification()
         {
             if (login != "1")
@@ -351,42 +352,63 @@ namespace HttpProject_GroupWork
         {
             if (Verification())
             {
+                
                 // takes the date depending of the console
                 DateTime comparingDate = GetDateFromPath();
-
+                
                 //If the request Content is empty, the client wants the data file completed. Otherwise, he wants to know some Videogame-Data
                 if (requestContent == "")
                 {
 
                     if (comparingDate > getDate || firstTime || lastConsole != console || especificVideogame)
                     {
-                        await GetDataInformationFile();
-                        lastConsole = console;
-                        firstTime = false;
-                        especificVideogame = true;
+                            await GetDataInformationFile();
+                            lastConsole = console;
+                            firstTime = false;
+                            especificVideogame = false;
+                            if (comparingDate <= getDate)
+                            {
+                                responseCode = "304 Not modified";
+                            }
+                            else
+                            {
+                                responseCode = "200 OK";
+                            }
+                            Debug.Log("Este es el codigo de respuesta: " + responseCode);
+                        }
+                        else
+                        {
+                            responseCode = "304 Not modified";
+                        }
                     }
                     else
                     {
-                        responseCode = "304 Not modified";
-                    }
-                }
-                else
-                {
-                    especificVideogame = false;
-                    if (comparingDate > getDate || firstTime || lastConsole != console || !especificVideogame)
-                    {
-                        int indexOfName = requestContent.IndexOf(": ") + 2;
+                        especificVideogame = false;
+                        if (comparingDate > getDate || firstTime || lastConsole != console || !especificVideogame)
+                        {
+                            int indexOfName = requestContent.IndexOf(": ") + 2;
 
-                        string gameName = requestContent.Substring(indexOfName);
+                            string gameName = requestContent.Substring(indexOfName);
 
-                        GetVideogameDataFromFile(gameName);
-                        lastConsole = console;
-                        firstTime = false;
-                        especificVideogame = true;
+                            GetVideogameDataFromFile(gameName);
+                            lastConsole = console;
+                            firstTime = false;
+                            especificVideogame = true;
+                            if (comparingDate <= getDate)
+                            {
+                                responseCode = "304 Not modified";
+                            }
+                            else
+                            {
+                                responseCode = "200 OK";
+                            }
+
+                        }
+
                     }
-                }
             }
         }
+    
 
         public async Task GetDataInformationFile()
         {

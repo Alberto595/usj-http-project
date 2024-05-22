@@ -130,6 +130,7 @@ public class Client
 
             if (message.Contains("304")) 
             {
+                GamePanel.Instance.UpdateGamePanel(gamesInfo);
                 UImessages.ShowNotModified();
             }
             else
