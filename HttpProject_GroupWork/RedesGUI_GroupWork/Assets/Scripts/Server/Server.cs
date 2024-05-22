@@ -33,6 +33,9 @@ namespace HttpProject_GroupWork
         private DateTime modifyDate;
         private DateTime getDate;
         private bool firstTime =  true;
+        public string console = null;
+        public string lastConsole = null;
+        public bool especificVideogame = true;
      
         public Server()
         {
@@ -352,40 +355,36 @@ namespace HttpProject_GroupWork
                 if (requestContent == "")
                 {
                 
-                    if (comparingDate > getDate || firstTime)
+                    if (comparingDate > getDate || firstTime || lastConsole != console || especificVideogame)
                     {
                         await GetDataInformationFile();
-                        modifyDate = DateTime.Now;
+                        lastConsole = console;
                         firstTime = false;
+                        especificVideogame = true;
                     }
                     else
                     {
                         responseCode = "304 Not modified";
                     }
-
-                
                 }
                 else
                 {
-                    if (comparingDate > getDate || firstTime) { 
-                        int indexOfName = requestContent.IndexOf(": ") + 2;
+                    especificVideogame = false;
+                if (comparingDate > getDate || firstTime || lastConsole != console || !especificVideogame) { 
+                    int indexOfName = requestContent.IndexOf(": ") + 2;
 
-                        string gameName = requestContent.Substring(indexOfName);
+                    string gameName = requestContent.Substring(indexOfName);
                 
-                        GetVideogameDataFromFile(gameName);
-                        modifyDate =  DateTime.Now;
-                        firstTime = false;
-                    }
-                    else
-                    {
-                        responseCode = "304 Not modified";
-                    }
+                    GetVideogameDataFromFile(gameName);
+                    lastConsole = console;
+                    firstTime = false;
+                    especificVideogame = true;
                 }
-            }else
-            {
-                response = "Verificatio Error";
-                responseCode = "Error 6969 there was a verification error";
-            }
+                else
+                {
+                    response = "Verificatio Error";
+                    responseCode = "Error 6969 there was a verification error";
+                }
         }
 
         public async Task GetDataInformationFile()
@@ -683,7 +682,7 @@ namespace HttpProject_GroupWork
         #region GetDateFromPath
         private DateTime GetDateFromPath()
         {
-            string console = null;
+            console = null;
             for (int i = filePath.Length - 1; i >= 0; i--)
             {
                 if (filePath[i] != '/')
